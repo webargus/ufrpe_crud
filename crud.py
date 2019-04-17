@@ -43,7 +43,7 @@ while True:
     print("")
 
     try:
-        opção = int(input("Entre o número da opção desejada: "))
+        opção = int(input("Entre o número da opção desejada: \n"))
         # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
         # não exista na lista de opções do menu (var. opções):
         rótulo = opções[opção][0]
