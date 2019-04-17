@@ -33,7 +33,9 @@ def ler_arquivo(arquivo):
         linha = linha.strip()   # remove /n do final da linha
         linha = linha[1:-1]     # remove aspas duplas do início e do final da linha
         # pega campos da linha separados por ";" e os adiciona à lista de retorno
-        lista.append(linha.strip().split('";"'))
+        linha = linha.split('";"')
+        linha = [restaurar_aspas(x) for x in linha]
+        lista.append(linha)
     handle.close()
     return lista
 
@@ -41,7 +43,16 @@ def ler_arquivo(arquivo):
 def salvar_arquivo(arquivo, *lista):
     handle = open(arquivo + ".csv", "w", encoding="utf-8")
     for l in lista:
-        handle.write("".join([x + ";" for x in l])[:-1] + "\n")
+        for ll in l:
+            handle.write(''.join(['"' + escapar_aspas(x) + '";' for x in ll])[:-1] + "\n")
+    handle.close()
+
+def escapar_aspas(str):
+    return str.replace(';', '\;')
+
+
+def restaurar_aspas(str):
+    return str.replace('\;', ';')
 
 
 
