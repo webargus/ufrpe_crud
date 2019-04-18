@@ -22,7 +22,15 @@ def sair():
     sys.exit(0)
 
 
-# loop para input de opção de menu com bloco try-except para forçar
+# As opções de menu estão numa lista de tuplas contendo o rótulo da opção
+# e a função que deve ser executada mediante a escolha de uma opção;
+# o objetivo é facilitar seja a exclusão de opções existentes
+# ou a inclusão de novas opções, caso seja necessário modificar o programa.
+opções = [("Sair", sair), ("Professores", professores),
+          ("Disciplinas", disciplinas), ("Alunos", alunos),
+          ("Turmas", turmas), ("Relatórios", relatorios)]
+
+# loop para entrada de opção de menu com bloco try-except para forçar
 # o usuário a entrar uma opção válida:
 while True:
     print("")
@@ -30,14 +38,6 @@ while True:
     s = "menu principal"
     print("\n\t\t" + s.upper())
     print("\t\t" + "-"*len(s))
-
-    # As opções de menu estão numa lista de tuplas contendo o rótulo da opção
-    # e a função que deve ser executada mediante a escolha de uma opção;
-    # o objetivo é facilitar seja a exclusão de opções existentes
-    # ou a inclusão de novas opções, caso seja necessário modificar o programa.
-    opções = [("Sair", sair), ("Professores", professores),
-              ("Disciplinas", disciplinas), ("Alunos", alunos),
-              ("Turmas", turmas), ("Relatórios", relatorios)]
 
     # imprime o número de cada opção e sua descrição:
     for opção, tupla in enumerate(opções):
@@ -50,7 +50,7 @@ while True:
         # não exista na lista de opções do menu (var. opções):
         rótulo = opções[opção][0]
     except Exception:
-        print("Opção inválida")
+        print("Opção inválida :(")
         continue
 
     # chama a função que executa a opção desejada;

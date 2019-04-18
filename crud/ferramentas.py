@@ -96,16 +96,22 @@ def imprimir_tabela(headers, dados):
     #   +------------+-------------+--------+-------------+
     #
 
+    lars = list(headers.values())
+    largura_total = sum([int(l) for l in lars])
+    print("="*largura_total)
+    print('{:^4}'.format('ORD'), end='')
     for header, largura in headers.items():
         formato = '{:' + largura + '}'
         print(formato.format(header), end='')
-    lars = list(headers.values())
+    print('')
+    print("-"*largura_total)
     for linha in range(len(dados)):
-        print('')
+        print('{:^4}'.format(str(linha + 1)), end='')
         for coluna in range(len(dados[linha])):
             formato = '{:' + lars[coluna] + '}'
             print(formato.format(dados[linha][coluna]), end='')
-    print('')
+        print('')
+    print("="*largura_total)
 
 
 
