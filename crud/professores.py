@@ -11,12 +11,18 @@
 
 import crud.ferramentas as f
 
-#  Variáveis do módulo:
-arquivo = "professores"  # nome do arquivo .csv para salvar o cadastro de professores
-lista = []               # lista com cópia do arquivo para as operações CRUD na memória
+#  Variáveis globais do módulo:
+#
+# nome do arquivo .csv para salvar o cadastro de professores
+arquivo = "professores"
+#
+# lista com cópia do arquivo para as operações CRUD na memória
+lista = []
+#
 # dicionário de formatação do cabeçalho de impressão da lista de professores cadastrados;
 # as chaves são os nomes das colunas e os valores são as larguras das colunas
 cabeçalho = {"CPF": "15", "Nome": "50", "Departamento": "18"}
+#
 
 
 def _novo_cadastro():
@@ -94,6 +100,32 @@ def _alterar_cadastro():
     if salvar:
         _salvar_cadastro()
 
+
+def _excluir_cadastro():
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) do cadastro que deseja excluir (0 - aborta):\n"))
+            if ord > len(lista):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("CPF: %s" % (lista[ord][0]))
+    print("Nome: %s" % (lista[ord][1]))
+    print("Departamento: %s" % (lista[ord][2]))
+    #   TODO: Nega exclusão se cadastro vinculado a alguma turma
+    resp = input("Confirma a exclusão desse cadastro?\n(sim = confirma): ")
+    if resp.lower() != 'sim':
+        return
+    del lista[ord]
+    _salvar_cadastro()
+
+
 def _ler_cadastro():
     del lista[:]    # limpa lista antes de ler
     f.ler_arquivo(arquivo, lista)
@@ -130,6 +162,8 @@ def _menu_professores():
 
 
 def acha_cpf(cpf):
+    # Função para encontrar um cadastro na lista pelo CPF do professor;
+    # retorna o índice do cadastro na lista se existir o CPF ou -1 se CPF não cadastrado
     for indice, cadastro in enumerate(lista):
         if cadastro[0] == cpf:
             return indice
@@ -145,9 +179,9 @@ def professores():
 # o objetivo é facilitar seja a exclusão de opções existentes
 # ou a inclusão de novas opções, caso seja necessário modificar a rotina.
 opções = [("Sair", lambda _=None: True), ("Novo cadastro", _novo_cadastro),
-          ("Alterar cadastro", _alterar_cadastro)]
+          ("Alterar cadastro", _alterar_cadastro), ("Excluir cadastro", _excluir_cadastro)]
 
-#   inicializa o módulo lendo o cadastro para a memória
+#   inicializa o módulo lendo o cadastro do arquivo para a memória
 _ler_cadastro()
 
 
