@@ -10,11 +10,11 @@
 """
 
 import sys
-from professores import professores
-from disciplinas import disciplinas
-from alunos import alunos
-from relatorios import relatorios
-from turmas import turmas
+from crud.professores import professores
+from crud.disciplinas import disciplinas
+from crud.alunos import alunos
+from crud.relatorios import relatorios
+from crud.turmas import turmas
 
 
 def sair():
@@ -30,6 +30,7 @@ while True:
     s = "menu principal"
     print("\n\t\t" + s.upper())
     print("\t\t" + "-"*len(s))
+
     # As opções de menu estão numa lista de tuplas contendo o rótulo da opção
     # e a função que deve ser executada mediante a escolha de uma opção;
     # o objetivo é facilitar seja a exclusão de opções existentes
@@ -37,6 +38,7 @@ while True:
     opções = [("Sair", sair), ("Professores", professores),
               ("Disciplinas", disciplinas), ("Alunos", alunos),
               ("Turmas", turmas), ("Relatórios", relatorios)]
+
     # imprime o número de cada opção e sua descrição:
     for opção, tupla in enumerate(opções):
         print("%d - %s" % (opção, tupla[0]))

@@ -51,6 +51,7 @@ def salvar_arquivo(arquivo, *lista):
             handle.write(''.join(['"' + _escapar_separador(x) + '";' for x in ll])[:-1] + "\n")
     handle.close()
 
+
 def _escapar_separador(str):
     return str.replace(';', '\;')
 
@@ -59,10 +60,65 @@ def _restaurar_separador(str):
     return str.replace('\;', ';')
 
 
-def validar_CPF(cpf):
+def validar_cpf(cpf):
     #   Função para validar CPF; retorna True se CPF válido, False se não válido
     if re.match(pattern, cpf) is None:
         return False
     return True
+
+def formatar_cpf(cpf):
+    #   retorna string de CPF no formato xxx.xxx.xxx-xx
+    ret = ''        # string acumuladora do retorno formatado
+    for x in range(0, 9, 3):        # acrescenta '.' a cada 3 algarismos
+        ret += cpf[x:x+3] + '.'
+    ret = ret[:-1]                  # descarta o último '.' acrescentado e
+    ret += '-' + cpf[-2:]           # substitui por um '-' seguido dos 2 últimos algarismos
+    return ret
+
+
+def imprimir_tabela(headers, dados):
+
+    #   Imprime dados formatados em tabela
+    #
+    #   Entradas:
+    #       Cabeçalho: headers = {"nome campo 0": tamanho, ..., "nome campo n-1": tamanho}
+    #       Dados a imprimir: matriz m linhas X n colunas
+#               dados = [[dado 0, ... dado n-1], ..., [dado 0, ... dado n-1]]
+    #
+    #   +------------+-------------+--------+-------------+
+    #   |campo-0     |campo-1      |  ...   |campo-(n-1)  |
+    #   +------------+-------------+--------+-------------+
+    #   |dado[0][0]  |dado[0][1]   |  ...   |dado[0][n-1] |
+    #   +------------+-------------+--------+-------------+
+    #                           ...
+    #   +------------+-------------+--------+-------------+
+    #   |dado[m-1][0]|dado[m-1][1] |  ...   |dado[m-1][n-1]   |
+    #   +------------+-------------+--------+-------------+
+    #
+
+    for header, largura in headers.items():
+        formato = '{:' + largura + '}'
+        print(formato.format(header), end='')
+    lars = list(headers.values())
+    for linha in range(len(dados)):
+        print('')
+        for coluna in range(len(dados[linha])):
+            formato = '{:' + lars[coluna] + '}'
+            print(formato.format(dados[linha][coluna]), end='')
+    print('')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
