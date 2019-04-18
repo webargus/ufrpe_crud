@@ -56,13 +56,57 @@ def _nova_disciplina():
     _salvar_cadastro()
 
 
-
 def _alterar_disciplina():
-    pass
+    if len(lista) == 0:
+        print("***Não há disciplinas cadastradas para alteração\n")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da disciplina cujo nome deseja alterar (0 - aborta):\n"))
+            if ord > len(lista):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Código: %s" % (lista[ord][0]))
+    print("Nome: %s" % (lista[ord][1]))
+    nome = input("Entre o nome correto da disciplina (Enter = mantem):\n")
+    nome = nome.strip()
+    if len(nome) > 0:
+        lista[ord][1] = nome
+        _salvar_cadastro()
 
 
 def _excluir_disciplina():
-    pass
+    if len(lista) == 0:
+        print("***Não há disciplinas cadastradas para exclusão\n")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da disciplina que deseja excluir (0 - aborta):\n"))
+            if ord > len(lista):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Código: %s" % (lista[ord][0]))
+    print("Nome: %s" % (lista[ord][1]))
+    #   TODO: Nega exclusão se disciplina vinculada a alguma turma
+    resp = input("Confirma a exclusão dessa disciplina?\n(sim = confirma): ")
+    if resp.lower() != 'sim':
+        return
+    del lista[ord]
+    _salvar_cadastro()
 
 
 def _ler_cadastro():

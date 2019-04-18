@@ -83,19 +83,20 @@ def _alterar_cadastro():
             print("Operação abortada")
             return
         break
-    print("CPF: %s" % (lista[ord-1][0]))
-    print("Nome: %s" % (lista[ord-1][1]))
-    print("Departamento: %s" % (lista[ord-1][2]))
+    ord -= 1
+    print("CPF: %s" % (lista[ord][0]))
+    print("Nome: %s" % (lista[ord][1]))
+    print("Departamento: %s" % (lista[ord][2]))
     salvar = False
     nome = input("Entre o nome correto do professor (Enter = mantem):\n")
     nome = nome.strip()
     if len(nome) > 0:
-        lista[ord-1][1] = nome
+        lista[ord][1] = nome
         salvar = True
     depto = input("Entre o departamento do professor (Enter = mantem):\n")
     depto = depto.strip()
     if len(depto) > 0:
-        lista[ord-1][2] = depto
+        lista[ord][2] = depto
         salvar = True
     if salvar:
         _salvar_cadastro()
