@@ -6,14 +6,15 @@
     *   Autor: Edson Kropniczki - BSI - 2019.1 - Introdução â programação   *
     *   Professor: Gilberto Cysneiros Filho                                 *
     *                                                                       *
-    *   Funções auxiliares compartilhadas pelo sistema                      *
+    *   Funções auxiliares compartilhadas pelo sistema CRUD                 *
     *                                                                       *
     *                                                                       *
     *************************************************************************
 """
 
 import re
-pattern = r"^\d{11}$"
+cpf_pattern = r"^\d{11}$"
+disciplina_pattern = r"^\d{5}$"
 
 #   Funções para ler/escrever em arquivos no formato .csv,
 #   prevendo eventual migração para base de dados no futuro.
@@ -62,9 +63,10 @@ def _restaurar_separador(str):
 
 def validar_cpf(cpf):
     #   Função para validar CPF; retorna True se CPF válido, False se não válido
-    if re.match(pattern, cpf) is None:
+    if re.match(cpf_pattern, cpf) is None:
         return False
     return True
+
 
 def formatar_cpf(cpf):
     #   retorna string de CPF no formato xxx.xxx.xxx-xx
@@ -74,6 +76,13 @@ def formatar_cpf(cpf):
     ret = ret[:-1]                  # descarta o último '.' acrescentado e
     ret += '-' + cpf[-2:]           # substitui por um '-' seguido dos 2 últimos algarismos
     return ret
+
+
+def validar_disciplina(codigo):
+    #   verifica se o código da disciplina consiste em string de 5 algarismos
+    if re.match(disciplina_pattern, codigo) is None:
+        return False
+    return True
 
 
 def imprimir_tabela(headers, dados):
