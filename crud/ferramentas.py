@@ -107,8 +107,8 @@ def copiar_lista(lista):
     #       lista2.append(x)
     #
     #   Explicação:
-    #   Todas as alternativas acima fazem meramente uma cópia rasa (shallow copy) da lista
-    #   e Python mantem as referências internas de memória para as sub-listas da lista composta inalteradas.
+    #   Todas as alternativas acima fazem meramente uma cópia rasa (shallow copy) da lista, na qual
+    #   Python mantem as referências internas de memória para as sub-listas da lista composta inalteradas.
     #   A consequência é que, ao fazer qualquer modificação na 'cópia' (lista2), essa alteração também ocorre
     #   na lista original (lista1).
     #   Na prática, o método copy() é INÚTIL quando se trata de listas compostas (Python SUCKS!)

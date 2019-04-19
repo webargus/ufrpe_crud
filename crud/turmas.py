@@ -210,6 +210,59 @@ def _incluir_professor():
     _salvar_professores()
 
 
+def _excluir_professor():
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da turma do professor (0 - aborta):\n"))
+            if ord > len(lista_turmas):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    id_turma = lista_turmas[ord][0]
+    print("Turma: %s" % (lista_turmas[ord][1]))
+    print("Período: %s" % (lista_turmas[ord][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    #   busca por professores da turma pela id da turma
+    professores = _acha_professores(lista_turmas[ord][0])
+    if len(professores) == 0:
+        print("Não há professores designados para essa turma.")
+        return
+    pos = 0
+    if len(professores) > 1:
+        print("Professores:")
+        for indice in range(len(professores)):
+            print("\t%d - %s" % (indice + 1, professores[indice][1]))
+        while True:
+            try:
+                pos = int(input("Remover qual professor (de 1 a %d):" % (len(professores))))
+                if 1 > pos > len(professores):
+                    raise ValueError
+                else:
+                    pos -= 1
+                    break
+            except ValueError:
+                print("Entrada inválida :(")
+    print("Remover professor: %s" % (professores[pos][1]))
+    resp = input("Confirma a remoção (sim - remove)?")
+    if resp.lower() != 'sim':
+        return
+    _remover_professor(id_turma, professores[pos][0])
+
+
+def _remover_professor(id_turma, cpf):
+    for entrada in lista_profs:
+        if entrada[0] == id_turma and entrada[1] == cpf:
+            lista_profs.remove(entrada)
+            _salvar_professores()
+            break
+
+
 def _elimina_professores(id_turma):
     for entrada in lista_profs:
         if entrada[0] == id_turma:
@@ -323,7 +376,8 @@ def turmas():
 opções = [("Sair", lambda _=None: True),
           ("Criar turma", _criar_turma),
           ("Excluir turma", _excluir_turma),
-          ("Incluir professor", _incluir_professor)]
+          ("Incluir professor", _incluir_professor),
+          ("Excluir professor", _excluir_professor)]
 
 #   inicializa o módulo lendo os cadastros de turmas do arquivo para a memória
 _ler_alunos()
