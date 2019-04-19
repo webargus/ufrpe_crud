@@ -93,6 +93,29 @@ def validar_periodo(periodo):
     return True
 
 
+def copiar_lista(lista):
+    #   Lição aprendida às duras penas:
+    #   Quando se quer copiar uma lista composta, do tipo lista1 = [[1, 2, 3],[4, 5, 6],...[x, y, z]], por exemplo,
+    #   nenhuma das opções abaixo funciona:
+    #
+    #   lista2 = lista1.copy()      #   falha
+    #
+    #   lista2 = lista1[:]          #   falha
+    #
+    #   lista2 = []
+    #   for x in lista1:            #   falha
+    #       lista2.append(x)
+    #
+    #   Explicação:
+    #   Todas as alternativas acima fazem meramente uma cópia rasa (shallow copy) da lista
+    #   e Python mantem as referências internas de memória para as sub-listas da lista composta inalteradas.
+    #   A consequência é que, ao fazer qualquer modificação na 'cópia' (lista2), essa alteração também ocorre
+    #   na lista original (lista1).
+    #   Na prática, o método copy() é INÚTIL quando se trata de listas compostas (Python SUCKS!)
+    #   A solução é criar uma nova lista copiando as listas internas uma por uma, usando compreensão de listas:
+    return [[x for x in y] for y in lista]
+
+
 def imprimir_tabela(headers, dados):
 
     #   Imprime dados formatados em tabela

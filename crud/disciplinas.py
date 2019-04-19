@@ -130,7 +130,7 @@ def acha_disciplina(codigo):
 
 def exportar_tabela():
     f.imprimir_tabela(cabeçalho, lista)
-    return lista
+    return f.copiar_lista(lista)
 
 
 def disciplinas():

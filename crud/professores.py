@@ -136,6 +136,20 @@ def _salvar_cadastro():
     f.salvar_arquivo(arquivo, lista)
 
 
+def acha_professor(cpf):
+    # Função para encontrar um cadastro na lista pelo CPF do professor;
+    # retorna o cadastro na lista se existir o CPF ou None se CPF não cadastrado
+    for cadastro in lista:
+        if cadastro[0] == cpf:
+            return cadastro
+    return None
+
+
+def exportar_tabela():
+    f.imprimir_tabela(cabeçalho, lista)
+    return f.copiar_lista(lista)
+
+
 def _menu_professores():
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
@@ -160,15 +174,6 @@ def _menu_professores():
         opções[opção][1]()
         if opção == 0:
             break  # retorna para o menu principal
-
-
-def acha_professor(cpf):
-    # Função para encontrar um cadastro na lista pelo CPF do professor;
-    # retorna o cadastro na lista se existir o CPF ou None se CPF não cadastrado
-    for cadastro in lista:
-        if cadastro[0] == cpf:
-            return cadastro
-    return None
 
 
 def professores():

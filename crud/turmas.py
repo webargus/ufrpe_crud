@@ -11,8 +11,9 @@
 
 import crud.ferramentas as f
 from crud.disciplinas import acha_disciplina
-from crud.disciplinas import exportar_tabela as importar_tabela
+from crud.disciplinas import exportar_tabela as importar_disciplinas
 from crud.professores import acha_professor
+from crud.professores import exportar_tabela as importar_professores
 
 #  Variáveis globais do módulo:
 #
@@ -64,14 +65,14 @@ def _criar_turma():
                 print("Período inválido (formato = aaaa.s, ex., 2019.1, 2018.2)")
 
         # pega disciplina
-        disciplinas = importar_tabela()
+        disciplinas = importar_disciplinas()
         if len(disciplinas) == 0:
-            print("***Não há disciplinas cadastradas para inclusão")
+            print("***Não há disciplinas cadastradas")
             print("\tNo menu principal, escolha a opção '2 - disciplinas->1 - Nova disciplina' e cadastre a disciplina\n")
             return
         while True:
             try:
-                ord = int(input("Entre o número (ORD) da disciplina que deseja incluir (0 - aborta):\n"))
+                ord = int(input("Entre o número (ORD) da disciplina (0 - aborta):\n"))
                 if ord > len(disciplinas):
                     raise ValueError
             except ValueError:
@@ -91,27 +92,163 @@ def _criar_turma():
             break
         else:
             print("Turma já cadastrada")
-    #   inclui turma e salva arquivo
+
+    #   inclui turma na memória e a salva em arquivo
     lista_turmas.append([id_turma, codigo, periodo, disciplinas[ord][0]])
     _salvar_turmas()
 
-
+"""
 def _alterar_turma():
-    pass
+    if len(lista_turmas) == 0:
+        print("Não há turmas cadastradas, nada a alterar...")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da turma que deseja alterar (0 - aborta):\n"))
+            if ord > len(lista_turmas):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Turma: %s" % (lista_turmas[ord][1]))
+    print("Período: %s" % (lista_turmas[ord][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    _criar_turma(ord)
+"""
 
 
 def _excluir_turma():
-    pass
+    if len(lista_turmas) == 0:
+        print("Cadastro de turmas vazio, não há turmas para excluir.")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da turma que deseja excluir (0 - aborta):\n"))
+            if ord > len(lista_turmas):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Turma: %s" % (lista_turmas[ord][1]))
+    print("Período: %s" % (lista_turmas[ord][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    print("ATENÇÃO! A exclusão dessa turma implica na exclusão de todos os professores e alunos a ela vinculados.")
+    print("Confirma a exclusão dessa turma assim mesmo?")
+    resp = input("(sim = confirma): ")
+    if resp.lower() != 'sim':
+        return
+    id_turma = lista_turmas[ord][0]
+    _elimina_professores(id_turma)
+    _elimina_alunos(id_turma)
+    del lista_turmas[ord]
+    _salvar_turmas()
+    _salvar_professores()
+    _salvar_alunos()
+
+
+def _incluir_professor():
+    if len(lista_turmas) == 0:
+        print("Não há turmas cadastradas para incluir professor")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da turma para incluir professor (0 - aborta):\n"))
+            if ord > len(lista_turmas):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Turma: %s" % (lista_turmas[ord][1]))
+    print("Período: %s" % (lista_turmas[ord][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    id_turma = lista_turmas[ord][0]
+
+    # busca professor
+    professores = importar_professores()
+    if len(professores) == 0:
+        print("***Não há professores cadastrados")
+        print("\tNo menu principal, escolha a opção '1 - professores -> 1 - Novo cadastro' e cadastre professor\n")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) do professor (0 - aborta):\n"))
+            if ord > len(professores):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+
+    ord -= 1
+    cpf = professores[ord][0]
+    print("CPF: %s" % cpf)
+    print("Nome: %s" % (professores[ord][1]))
+    profs = _acha_professores(id_turma)
+    for prof in profs:
+        if prof[0] == cpf:
+            print("Esse professor já está a cargo dessa turma.")
+            return
+    lista_profs.append([id_turma, cpf])
+    _salvar_professores()
+
+
+def _elimina_professores(id_turma):
+    for entrada in lista_profs:
+        if entrada[0] == id_turma:
+            lista_profs.remove(entrada)
+            _elimina_professores(id_turma)
+
+
+def _elimina_alunos(id_turma):
+    for entrada in lista_alunos:
+        if entrada[0] == id_turma:
+            lista_alunos.remove(entrada)
+            _elimina_alunos(id_turma)
 
 
 def _ler_turmas():
     del lista_turmas[:]    # limpa lista antes de ler
-    print(turmas_geral)
     f.ler_arquivo(turmas_geral, lista_turmas)
 
 
 def _salvar_turmas():
     f.salvar_arquivo(turmas_geral, lista_turmas)
+
+
+def _ler_professores():
+    del lista_profs[:]
+    f.ler_arquivo(turmas_profs, lista_profs)
+
+
+def _salvar_professores():
+    f.salvar_arquivo(turmas_profs, lista_profs)
+
+
+def _ler_alunos():
+    del lista_alunos[:]
+    f.ler_arquivo(turmas_alunos, lista_alunos)
+
+
+def _salvar_alunos():
+    f.salvar_arquivo(turmas_alunos, lista_alunos)
 
 
 def _acha_turma(id_turma):
@@ -127,16 +264,29 @@ def _acha_professores(id_turma):
     professores = []
     for entrada in lista_profs:
         if entrada[0] == id_turma:
-            professores.append(acha_professor(entrada[1]))
+            prof = acha_professor(entrada[1])
+            if prof is not None:
+                professores.append(prof)
     return professores
 
 
 def _imprimir_turmas():
-    lista = [x[1:] for x in lista_turmas.copy()]
+    # copia a lista de turmas
+    lista = f.copiar_lista(lista_turmas)
+
+    # prepara a cópia da lista de turmas para impressão
     for turma in lista:
-        turma.append(acha_disciplina(turma[2])[1])
-        professores = _acha_professores(turma[0])
-        turma.append('\n'.join([x[1] for x in professores]))
+        # inclui nome da disciplina na cópia
+        # a posição 3 contém o código da disciplina na lista das turmas;
+        # a posição 1 da lista retornada pela busca contém o nome da disciplina
+        turma.append(acha_disciplina(turma[3])[1])
+        # inclui o(s) nome(s) do(s) professor(es) na listagem
+        # lista os nomes dos professores (conteúdos na posição 1) dos resultados da busca pelos professores
+        # e une-os com vírgula
+        professores = ', '.join([x[1] for x in _acha_professores(turma[0])])
+        turma.append(professores)
+    #  elimina campo da id da turma antes de imprimir
+    lista = [x[1:] for x in lista]
     f.imprimir_tabela(cabeçalho_turmas, lista)
 
 
@@ -172,10 +322,12 @@ def turmas():
 # ou a inclusão de novas opções, caso seja necessário modificar a rotina.
 opções = [("Sair", lambda _=None: True),
           ("Criar turma", _criar_turma),
-          ("Alterar turma", _alterar_turma),
-          ("Excluir turma", _excluir_turma)]
+          ("Excluir turma", _excluir_turma),
+          ("Incluir professor", _incluir_professor)]
 
-#   inicializa o módulo lendo o cadastro de turmas do arquivo para a memória
+#   inicializa o módulo lendo os cadastros de turmas do arquivo para a memória
+_ler_alunos()
+_ler_professores()
 _ler_turmas()
 
 
