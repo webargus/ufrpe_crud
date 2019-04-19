@@ -33,9 +33,9 @@ def _nova_disciplina():
             return
         if f.validar_disciplina(codigo):
             #   faz busca pelo código e nega inclusão se cadastro já existente
-            indice = acha_disciplina(codigo)
-            if indice > -1:
-                print("A disciplina %s já está cadastrada no sistema" % codigo)
+            disc = acha_disciplina(codigo)
+            if disc is not None:
+                print("A disciplina %s - '%s' já está cadastrada no sistema" % disc)
             else:
                 break
         else:
@@ -120,12 +120,17 @@ def _salvar_cadastro():
 
 def acha_disciplina(codigo):
     # Função para encontrar uma disciplina na lista pelo código da disciplina;
-    # retorna o índice do cadastro na lista se existir o código
-    # ou -1 se o código não estiver cadastrado
-    for indice, cadastro in enumerate(lista):
+    # retorna tupla do cadastro na lista se existir o código
+    # ou None se o código não estiver cadastrado
+    for cadastro in lista:
         if cadastro[0] == codigo:
-            return indice
-    return -1
+            return cadastro
+    return None
+
+
+def exportar_tabela():
+    f.imprimir_tabela(cabeçalho, lista)
+    return lista
 
 
 def disciplinas():

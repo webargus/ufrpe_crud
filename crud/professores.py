@@ -34,9 +34,9 @@ def _novo_cadastro():
         if f.validar_cpf(cpf):
             #   faz busca pelo CPF e nega inclusão se cadastro já existente
             cpf = f.formatar_cpf(cpf)
-            indice = acha_cpf(cpf)
-            if indice > -1:
-                print("O CPF %s já está cadastrado no sistema" % cpf)
+            cadastro = acha_professor(cpf)
+            if cadastro is not None:
+                print("O CPF %s - %s já está cadastrado no sistema" % cadastro)
             else:
                 break
         else:
@@ -162,13 +162,13 @@ def _menu_professores():
             break  # retorna para o menu principal
 
 
-def acha_cpf(cpf):
+def acha_professor(cpf):
     # Função para encontrar um cadastro na lista pelo CPF do professor;
-    # retorna o índice do cadastro na lista se existir o CPF ou -1 se CPF não cadastrado
-    for indice, cadastro in enumerate(lista):
+    # retorna o cadastro na lista se existir o CPF ou None se CPF não cadastrado
+    for cadastro in lista:
         if cadastro[0] == cpf:
-            return indice
-    return -1
+            return cadastro
+    return None
 
 
 def professores():

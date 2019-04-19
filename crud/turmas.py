@@ -10,11 +10,14 @@
 """
 
 import crud.ferramentas as f
+from crud.disciplinas import acha_disciplina
+from crud.disciplinas import exportar_tabela as importar_tabela
+from crud.professores import acha_professor
 
 #  Variáveis globais do módulo:
 #
 # nome do arquivo .csv para salvar as turmas
-turmas = "turmas"
+turmas_geral = "turmas"
 # nome do arquivo .csv para salvar os professores das turmas
 turmas_profs = "turmas_professores"
 # nome do arquivo .csv para salvar os alunos das turmas
@@ -29,119 +32,120 @@ lista_alunos = []
 #
 # dicionário de formatação do cabeçalho de impressão da lista de turmas;
 # as chaves são os nomes das colunas e os valores são as larguras das colunas
-cabeçalho = {"CPF": "15", "Nome": "50"}
+cabeçalho_turmas = {"Turma": "7", "Período": "8", "Código": "8", "Disciplina": "30", "Professor(es)": "50"}
 #
 
 
-def _nova_turma():
+def _criar_turma():
     while True:
-        codigo = input("Entre o código da turma (Enter - aborta):\n")
-        codigo = codigo.strip()
-        if len(codigo) == 0:
-            print("Operação abortada")
-            return
-        if len(codigo) < 5:
-                break
-        else:
-            print("Código inválido (4 caracteres no máximo): tente novamente")
+        while True:
+            codigo = input("Entre o código da turma (Enter - aborta):\n")
+            codigo = codigo.strip()
+            if len(codigo) == 0:
+                print("Operação abortada")
+                return
+            if len(codigo) < 5:
+                    # converte codigo para maiúsculas, para evitar entradas
+                    # em duplicidade:
+                    codigo = codigo.upper()
+                    break
+            else:
+                print("Código inválido (4 caracteres no máximo): tente novamente")
 
-    while True:
-        periodo = input("Entre o período da turma (Enter - aborta):\n")
-        periodo = periodo.strip()
-        if len(periodo) == 0:
-            print("Operação abortada")
+        while True:
+            periodo = input("Entre o período da turma (Enter - aborta):\n")
+            periodo = periodo.strip()
+            if len(periodo) == 0:
+                print("Operação abortada")
+                return
+            if f.validar_periodo(periodo):
+                break
+            else:
+                print("Período inválido (formato = aaaa.s, ex., 2019.1, 2018.2)")
+
+        # pega disciplina
+        disciplinas = importar_tabela()
+        if len(disciplinas) == 0:
+            print("***Não há disciplinas cadastradas para inclusão")
+            print("\tNo menu principal, escolha a opção '2 - disciplinas->1 - Nova disciplina' e cadastre a disciplina\n")
             return
-        if not f.validar_periodo(periodo):
+        while True:
+            try:
+                ord = int(input("Entre o número (ORD) da disciplina que deseja incluir (0 - aborta):\n"))
+                if ord > len(disciplinas):
+                    raise ValueError
+            except ValueError:
+                print("Entrada inválida :( tente novamente...")
+                continue
+            if ord == 0:
+                print("Operação abortada")
+                return
+            break
+
+        ord -= 1
+        print("Código: %s" % (disciplinas[ord][0]))
+        print("Nome: %s" % (disciplinas[ord][1]))
+        id_turma = codigo + periodo + disciplinas[ord][0]
+        turma = _acha_turma(id_turma)
+        if turma is None:
             break
         else:
-            print("Período inválido (formato = aaaa.s, ex., 2019.1, 2018.2)")
-
-    # pega disciplina
-
-
-
-def _alterar_cadastro():
-    if len(lista) == 0:
-        print("***Não há alunos cadastrados para alteração\n")
-        return
-    while True:
-        try:
-            ord = int(input("Entre o número (ORD) do aluno cujo nome deseja alterar (0 - aborta):\n"))
-            if ord > len(lista):
-                raise ValueError
-        except ValueError:
-            print("Entrada inválida :( tente novamente...")
-            continue
-        if ord == 0:
-            print("Operação abortada")
-            return
-        break
-    ord -= 1
-    print("CPF: %s" % (lista[ord][0]))
-    print("Nome: %s" % (lista[ord][1]))
-    nome = input("Entre o nome correto do aluno (Enter = mantem):\n")
-    nome = nome.strip()
-    if len(nome) > 0:
-        lista[ord][1] = nome
-        _salvar_cadastro()
+            print("Turma já cadastrada")
+    #   inclui turma e salva arquivo
+    lista_turmas.append([id_turma, codigo, periodo, disciplinas[ord][0]])
+    _salvar_turmas()
 
 
-def _excluir_aluno():
-    if len(lista) == 0:
-        print("***Não há alunos cadastrados para exclusão\n")
-        return
-    while True:
-        try:
-            ord = int(input("Entre o número (ORD) do aluno que deseja excluir (0 - aborta):\n"))
-            if ord > len(lista):
-                raise ValueError
-        except ValueError:
-            print("Entrada inválida :( tente novamente...")
-            continue
-        if ord == 0:
-            print("Operação abortada")
-            return
-        break
-    ord -= 1
-    print("CPF: %s" % (lista[ord][0]))
-    print("Nome: %s" % (lista[ord][1]))
-    #   TODO: Nega exclusão se aluno vinculado a alguma turma
-    resp = input("Confirma a exclusão desse aluno?\n(sim = confirma): ")
-    if resp.lower() != 'sim':
-        return
-    del lista[ord]
-    _salvar_cadastro()
+def _alterar_turma():
+    pass
 
 
-def _ler_cadastro():
-    del lista[:]    # limpa lista antes de ler
-    f.ler_arquivo(arquivo, lista)
+def _excluir_turma():
+    pass
 
 
-def _salvar_cadastro():
-    f.salvar_arquivo(arquivo, lista)
+def _ler_turmas():
+    del lista_turmas[:]    # limpa lista antes de ler
+    print(turmas_geral)
+    f.ler_arquivo(turmas_geral, lista_turmas)
 
 
-def acha_cpf_aluno(cpf):
-    # Função para encontrar um CPF na lista;
-    # retorna o índice do cadastro na lista se o CPF do aluno existir
-    # ou -1 se o CPF não estiver cadastrado
-    for indice, cadastro in enumerate(lista):
-        if cadastro[0] == cpf:
-            return indice
-    return -1
+def _salvar_turmas():
+    f.salvar_arquivo(turmas_geral, lista_turmas)
 
 
-def imprime_tabela():
-    f.imprimir_tabela(cabeçalho, lista)
+def _acha_turma(id_turma):
+    # busca turma por id da turma e retorna tupla com dados da turma
+    # ou None se turma não encontrada
+    for turma in lista_turmas:
+        if turma[0] == id_turma:
+            return turma
+    return None
 
 
-def alunos():
+def _acha_professores(id_turma):
+    professores = []
+    for entrada in lista_profs:
+        if entrada[0] == id_turma:
+            professores.append(acha_professor(entrada[1]))
+    return professores
+
+
+def _imprimir_turmas():
+    lista = [x[1:] for x in lista_turmas.copy()]
+    for turma in lista:
+        turma.append(acha_disciplina(turma[2])[1])
+        professores = _acha_professores(turma[0])
+        turma.append('\n'.join([x[1] for x in professores]))
+    f.imprimir_tabela(cabeçalho_turmas, lista)
+
+
+def turmas():
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
-        print("Cadastro de alunos".upper())
-        imprime_tabela()
+        print("Turmas".upper())
+        _imprimir_turmas()
         # imprime o número de cada opção e sua descrição:
         for opção, tupla in enumerate(opções):
             print("%d - %s" % (opção, tupla[0]))
@@ -166,12 +170,13 @@ def alunos():
 # e a função que deve ser executada mediante a escolha de uma opção;
 # o objetivo é facilitar seja a exclusão de opções existentes
 # ou a inclusão de novas opções, caso seja necessário modificar a rotina.
-opções = [("Sair", lambda _=None: True), ("Novo aluno", _novo_aluno),
-          ("Alterar cadastro", _alterar_cadastro),
-          ("Excluir aluno", _excluir_aluno)]
+opções = [("Sair", lambda _=None: True),
+          ("Criar turma", _criar_turma),
+          ("Alterar turma", _alterar_turma),
+          ("Excluir turma", _excluir_turma)]
 
-#   inicializa o módulo lendo o cadastro do arquivo para a memória
-_ler_cadastro()
+#   inicializa o módulo lendo o cadastro de turmas do arquivo para a memória
+_ler_turmas()
 
 
 
