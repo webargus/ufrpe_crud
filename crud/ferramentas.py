@@ -15,6 +15,7 @@
 import re
 cpf_pattern = r"^\d{11}$"
 disciplina_pattern = r"^\d{5}$"
+periodo_pattern = r"^\d{4}\.\d{1}$"
 
 #   Funções para ler/escrever em arquivos no formato .csv,
 #   prevendo eventual migração para base de dados no futuro.
@@ -81,6 +82,13 @@ def formatar_cpf(cpf):
 def validar_disciplina(codigo):
     #   verifica se o código da disciplina consiste em string de 5 algarismos
     if re.match(disciplina_pattern, codigo) is None:
+        return False
+    return True
+
+
+def validar_periodo(periodo):
+    #   verifica se o periodo está no formato aaaa.s, p.ex., 2019.1, 2018.2
+    if re.match(periodo_pattern, periodo) is None:
         return False
     return True
 

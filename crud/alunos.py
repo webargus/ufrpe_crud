@@ -129,12 +129,16 @@ def acha_cpf_aluno(cpf):
     return -1
 
 
+def imprime_tabela():
+    f.imprimir_tabela(cabeçalho, lista)
+
+
 def alunos():
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
         print("Cadastro de alunos".upper())
-        f.imprimir_tabela(cabeçalho, lista)
+        imprime_tabela()
         # imprime o número de cada opção e sua descrição:
         for opção, tupla in enumerate(opções):
             print("%d - %s" % (opção, tupla[0]))
