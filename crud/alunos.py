@@ -34,9 +34,9 @@ def _novo_aluno():
         if f.validar_cpf(cpf):
             #   faz busca pelo CPF e nega inclusão se cadastro já existente
             cpf = f.formatar_cpf(cpf)
-            indice = acha_cpf_aluno(cpf)
-            if indice > -1:
-                print("O aluno com o CPF %s já está cadastrado no sistema" % cpf)
+            aluno = acha_aluno(cpf)
+            if aluno is not None:
+                print("O aluno com o CPF %s - %s já está cadastrado no sistema" % (aluno[0], aluno[1]))
             else:
                 break
         else:
@@ -119,18 +119,15 @@ def _salvar_cadastro():
     f.salvar_arquivo(arquivo, lista)
 
 
-def acha_cpf_aluno(cpf):
+def acha_aluno(cpf):
     # Função para encontrar um CPF na lista;
-    # retorna o índice do cadastro na lista se o CPF do aluno existir
-    # ou -1 se o CPF não estiver cadastrado
-    for indice, cadastro in enumerate(lista):
+    # retorna o cadastro na lista se o CPF do aluno existir
+    # ou None se o CPF não estiver cadastrado
+    for cadastro in lista:
         if cadastro[0] == cpf:
-            return indice
-    return -1
+            return cadastro
+    return None
 
-
-def imprime_tabela():
-    f.imprimir_tabela(cabeçalho, lista)
 
 
 def alunos():
@@ -138,7 +135,7 @@ def alunos():
     # o usuário a entrar uma opção válida:
     while True:
         print("Cadastro de alunos".upper())
-        imprime_tabela()
+        f.imprimir_tabela(cabeçalho, lista)
         # imprime o número de cada opção e sua descrição:
         for opção, tupla in enumerate(opções):
             print("%d - %s" % (opção, tupla[0]))

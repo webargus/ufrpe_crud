@@ -14,6 +14,7 @@ from crud.disciplinas import acha_disciplina
 from crud.disciplinas import exportar_tabela as importar_disciplinas
 from crud.professores import acha_professor
 from crud.professores import exportar_tabela as importar_professores
+from crud.alunos import acha_aluno
 
 #  Variáveis globais do módulo:
 #
@@ -35,6 +36,8 @@ lista_alunos = []
 # as chaves são os nomes das colunas e os valores são as larguras das colunas
 cabeçalho_turmas = {"Turma": "7", "Período": "8", "Código": "8", "Disciplina": "30", "Professor(es)": "50"}
 #
+# dicionário de formatação do cabeçalho de impressão da lista de alunos;
+cabeçalho_alunos = {"CPF": "15", "Nome": "50"}
 
 
 def _criar_turma():
@@ -255,6 +258,112 @@ def _excluir_professor():
     _remover_professor(id_turma, professores[pos][0])
 
 
+def _incluir_aluno():
+    if len(lista_turmas) == 0:
+        print("Não há turmas para incluir aluno")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da turma para incluir o aluno (0 - aborta):\n"))
+            if ord > len(lista_turmas):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Turma: %s" % (lista_turmas[ord][1]))
+    print("Período: %s" % (lista_turmas[ord][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    id_turma = lista_turmas[ord][0]
+    #lista alunos da turma
+    print("Alunos matriculados na turma:")
+    _imprimir_alunos(id_turma)
+
+    # entra CPF do aluno a incluir
+    while True:
+        cpf = input("Entre o CPF do aluno (0 - aborta):\n")
+        if cpf == "0":
+            print("Operação abortada")
+            return
+        if f.validar_cpf(cpf):
+                break
+        else:
+            print("CPF inválido (somente algarismos, 11 dígitos): tente novamente")
+    # verifica se CPF de aluno está cadastrado
+    cpf = f.formatar_cpf(cpf)
+    aluno = acha_aluno(cpf)
+    if aluno is None:
+        print("Não há aluno cadastrado com o CPF %s" % cpf)
+        print("\tNo menu principal, escolha a opção '3 - Alunos -> 1 - Novo aluno' e cadastre o aluno\n")
+        return
+    # vê se aluno já foi incluido na turma
+    print("CPF: %s" % aluno[0])
+    print("Nome: %s" % (aluno[1]))
+    if _checa_aluno(cpf, id_turma):
+        print("Esse aluno já foi incluído na turma.")
+        return
+    # inclui aluno
+    lista_alunos.append([id_turma, cpf])
+    _salvar_alunos()
+    #lista alunos da turma
+    print("Alunos matriculados na turma:")
+    _imprimir_alunos(id_turma)
+
+
+def _excluir_aluno():
+    if len(lista_turmas) == 0:
+        print("Não há turmas para excluir aluno")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) da turma de onde excluir o aluno (0 - aborta):\n"))
+            if ord > len(lista_turmas):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    print("Turma: %s" % (lista_turmas[ord][1]))
+    print("Período: %s" % (lista_turmas[ord][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    id_turma = lista_turmas[ord][0]
+    #lista alunos da turma
+    print("Alunos matriculados na turma:")
+    lista = _imprimir_alunos(id_turma)
+    if len(lista) == 0:
+        print("Não há alunos inscritos nessa turma")
+        return
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) do aluno a excluir (0 - aborta):\n"))
+            if ord > len(lista):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    cpf = lista[ord][0]
+    print("CPF: %s" % cpf)
+    print("Nome: %s" % lista[ord][1])
+    resp = input("Confirma a remoção do aluno (sim - remove)?")
+    if resp.lower() != 'sim':
+        return
+    _remover_aluno(cpf, id_turma)
+    _imprimir_alunos(id_turma)
+
+
 def _remover_professor(id_turma, cpf):
     for entrada in lista_profs:
         if entrada[0] == id_turma and entrada[1] == cpf:
@@ -323,6 +432,27 @@ def _acha_professores(id_turma):
     return professores
 
 
+def _checa_aluno(cpf, id_turma):
+    for aluno in lista_alunos:
+        if aluno[0] == id_turma and aluno[1] == cpf:
+            return True
+    return False
+
+
+def _remover_aluno(cpf, id_turma):
+    for aluno in lista_alunos:
+        if aluno[0] == id_turma and aluno[1] == cpf:
+            lista_alunos.remove(aluno)
+            break
+    _salvar_alunos()
+
+
+def _imprimir_alunos(id_turma):
+    lista = [x for aluno in lista_alunos if aluno[0] == id_turma for x in [acha_aluno(aluno[1])]]
+    f.imprimir_tabela(cabeçalho_alunos, lista)
+    return lista
+
+
 def _imprimir_turmas():
     # copia a lista de turmas
     lista = f.copiar_lista(lista_turmas)
@@ -377,7 +507,9 @@ opções = [("Sair", lambda _=None: True),
           ("Criar turma", _criar_turma),
           ("Excluir turma", _excluir_turma),
           ("Incluir professor", _incluir_professor),
-          ("Excluir professor", _excluir_professor)]
+          ("Excluir professor", _excluir_professor),
+          ("Incluir aluno", _incluir_aluno),
+          ("Excluir aluno", _excluir_aluno)]
 
 #   inicializa o módulo lendo os cadastros de turmas do arquivo para a memória
 _ler_alunos()
