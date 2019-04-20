@@ -112,6 +112,7 @@ def _excluir_disciplina():
 def _ler_cadastro():
     del lista[:]    # limpa lista antes de ler
     f.ler_arquivo(arquivo, lista)
+    lista.sort(key=lambda disciplina: disciplina[1].lower())
 
 
 def _salvar_cadastro():

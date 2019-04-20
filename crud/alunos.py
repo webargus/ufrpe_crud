@@ -113,6 +113,7 @@ def _excluir_aluno():
 def _ler_cadastro():
     del lista[:]    # limpa lista antes de ler
     f.ler_arquivo(arquivo, lista)
+    lista.sort(key=lambda cadastro: cadastro[1].lower())
 
 
 def _salvar_cadastro():

@@ -470,6 +470,8 @@ def _imprimir_turmas():
         turma.append(professores)
     #  elimina campo da id da turma antes de imprimir
     lista = [x[1:] for x in lista]
+    #   ordena lista por disciplina
+    lista.sort(key=lambda linha: linha[3])
     f.imprimir_tabela(cabeçalho_turmas, lista)
 
 
