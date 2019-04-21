@@ -76,7 +76,7 @@ def _criar_turma():
         while True:
             try:
                 ord = int(input("Entre o número (ORD) da disciplina (0 - aborta):\n"))
-                if ord > len(disciplinas):
+                if ord < 0 or ord > len(disciplinas):
                     raise ValueError
             except ValueError:
                 print("Entrada inválida :( tente novamente...")
@@ -108,7 +108,7 @@ def _excluir_turma():
     while True:
         try:
             ord = int(input("Entre o número (ORD) da turma que deseja excluir (0 - aborta):\n"))
-            if ord > len(lista_turmas):
+            if ord < 0 or ord > len(lista_turmas):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -142,7 +142,7 @@ def _incluir_professor():
     while True:
         try:
             ord = int(input("Entre o número (ORD) da turma para incluir professor (0 - aborta):\n"))
-            if ord > len(lista_turmas):
+            if ord < 0 or ord > len(lista_turmas):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -166,7 +166,7 @@ def _incluir_professor():
     while True:
         try:
             ord = int(input("Entre o número (ORD) do professor (0 - aborta):\n"))
-            if ord > len(professores):
+            if ord < 0 or ord > len(professores):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -221,7 +221,7 @@ def _excluir_professor():
         while True:
             try:
                 pos = int(input("Remover qual professor (de 1 a %d):" % (len(professores))))
-                if 1 > pos > len(professores):
+                if pos < 1 or pos > len(professores):
                     raise ValueError
                 else:
                     pos -= 1
@@ -242,7 +242,7 @@ def _incluir_aluno():
     while True:
         try:
             ord = int(input("Entre o número (ORD) da turma para incluir o aluno (0 - aborta):\n"))
-            if ord > len(lista_turmas):
+            if ord < 0 or ord > len(lista_turmas):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -321,7 +321,7 @@ def _excluir_aluno():
     while True:
         try:
             ord = int(input("Entre o número (ORD) do aluno a excluir (0 - aborta):\n"))
-            if ord > len(lista):
+            if ord < 0 or ord > len(lista):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -517,10 +517,12 @@ def turmas():
 
         try:
             opção = int(input("Entre o número da opção desejada: \n"))
+            if opção < 0 or opção >= len(opções):
+                raise ValueError
+            print("Opção: %s" % (opções[opção][0]))
             # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
             # não exista na lista de opções do menu (var. opções):
-            print("Opção: %s" % (opções[opção][0]))
-        except Exception:
+        except ValueError:
             print("Opção inválida :(")
             continue
 

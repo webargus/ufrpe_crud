@@ -101,10 +101,12 @@ def relatorios():
 
         try:
             opção = int(input("Entre o número da opção desejada: \n"))
+            if opção < 0 or opção >= len(opções):
+                raise ValueError
+            print("Opção: %s" % (opções[opção][0]))
             # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
             # não exista na lista de opções do menu (var. opções):
-            print("Opção: %s" % (opções[opção][0]))
-        except Exception:
+        except ValueError:
             print("Opção inválida :(")
             continue
 

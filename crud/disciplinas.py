@@ -63,7 +63,7 @@ def _alterar_disciplina():
     while True:
         try:
             ord = int(input("Entre o número (ORD) da disciplina cujo nome deseja alterar (0 - aborta):\n"))
-            if ord > len(lista):
+            if ord < 0 or ord > len(lista):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -89,7 +89,7 @@ def _excluir_disciplina():
     while True:
         try:
             ord = int(input("Entre o número (ORD) da disciplina que deseja excluir (0 - aborta):\n"))
-            if ord > len(lista):
+            if ord < 0 or ord > len(lista):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -156,10 +156,12 @@ def disciplinas():
 
         try:
             opção = int(input("Entre o número da opção desejada: \n"))
+            if opção < 0 or opção >= len(opções):
+                raise ValueError
+            print("Opção: %s" % (opções[opção][0]))
             # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
             # não exista na lista de opções do menu (var. opções):
-            print("Opção: %s" % (opções[opção][0]))
-        except Exception:
+        except ValueError:
             print("Opção inválida :(")
             continue
 

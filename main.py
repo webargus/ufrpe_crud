@@ -46,10 +46,12 @@ while True:
 
     try:
         opção = int(input("Entre o número da opção desejada: \n"))
-        # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
-        # não exista na lista de opções do menu (var. opções):
+        if opção < 0 or opção >= len(opções):
+            raise ValueError
         rótulo = opções[opção][0]
-    except Exception:
+        # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
+        # não exista na lista de opções do menu (var. opções)
+    except ValueError:
         print("Opção inválida :(")
         continue
 
