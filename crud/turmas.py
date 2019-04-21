@@ -100,30 +100,6 @@ def _criar_turma():
     lista_turmas.append([id_turma, codigo, periodo, disciplinas[ord][0]])
     _salvar_turmas()
 
-"""
-def _alterar_turma():
-    if len(lista_turmas) == 0:
-        print("Não há turmas cadastradas, nada a alterar...")
-        return
-    while True:
-        try:
-            ord = int(input("Entre o número (ORD) da turma que deseja alterar (0 - aborta):\n"))
-            if ord > len(lista_turmas):
-                raise ValueError
-        except ValueError:
-            print("Entrada inválida :( tente novamente...")
-            continue
-        if ord == 0:
-            print("Operação abortada")
-            return
-        break
-    ord -= 1
-    print("Turma: %s" % (lista_turmas[ord][1]))
-    print("Período: %s" % (lista_turmas[ord][2]))
-    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
-    _criar_turma(ord)
-"""
-
 
 def _excluir_turma():
     if len(lista_turmas) == 0:
@@ -216,23 +192,24 @@ def _incluir_professor():
 def _excluir_professor():
     while True:
         try:
-            ord = int(input("Entre o número (ORD) da turma do professor (0 - aborta):\n"))
-            if ord > len(lista_turmas):
+            ordem = int(input("Entre o número (ORD) da turma do professor (0 - aborta):\n"))
+            if ordem < 0 or ordem > len(lista_turmas):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
             continue
-        if ord == 0:
+        if ordem == 0:
             print("Operação abortada")
             return
         break
-    ord -= 1
-    id_turma = lista_turmas[ord][0]
-    print("Turma: %s" % (lista_turmas[ord][1]))
-    print("Período: %s" % (lista_turmas[ord][2]))
-    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    print("ordem=", ordem)
+    ordem -= 1
+    id_turma = lista_turmas[ordem][0]
+    print("Turma: %s" % (lista_turmas[ordem][1]))
+    print("Período: %s" % (lista_turmas[ordem][2]))
+    print("Código da disciplina: %s" % (lista_turmas[ordem][3]))
     #   busca por professores da turma pela id da turma
-    professores = _acha_professores(lista_turmas[ord][0])
+    professores = _acha_professores(id_turma)
     if len(professores) == 0:
         print("Não há professores designados para essa turma.")
         return
@@ -321,7 +298,7 @@ def _excluir_aluno():
     while True:
         try:
             ord = int(input("Entre o número (ORD) da turma de onde excluir o aluno (0 - aborta):\n"))
-            if ord > len(lista_turmas):
+            if ord < 0 or ord > len(lista_turmas):
                 raise ValueError
         except ValueError:
             print("Entrada inválida :( tente novamente...")
@@ -413,12 +390,24 @@ def _salvar_alunos():
     f.salvar_arquivo(turmas_alunos, lista_alunos)
 
 
+def _exportar_turmas():
+    return f.copiar_lista(lista_turmas)
+
+
+def _exportar_professores():
+    return f.copiar_lista(lista_profs)
+
+
+def _exportar_alunos():
+    return f.copiar_lista(lista_alunos)
+
+
 def _acha_turma(id_turma):
     # busca turma por id da turma e retorna tupla com dados da turma
     # ou None se turma não encontrada
     for turma in lista_turmas:
         if turma[0] == id_turma:
-            return turma
+            return turma.copy()
     return None
 
 
@@ -470,8 +459,6 @@ def _imprimir_turmas():
         turma.append(professores)
     #  elimina campo da id da turma antes de imprimir
     lista = [x[1:] for x in lista]
-    #   ordena lista por disciplina
-    lista.sort(key=lambda linha: linha[3])
     f.imprimir_tabela(cabeçalho_turmas, lista)
 
 

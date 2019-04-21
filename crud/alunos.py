@@ -126,7 +126,7 @@ def acha_aluno(cpf):
     # ou None se o CPF não estiver cadastrado
     for cadastro in lista:
         if cadastro[0] == cpf:
-            return cadastro
+            return cadastro.copy()
     return None
 
 

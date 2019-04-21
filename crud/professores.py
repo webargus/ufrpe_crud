@@ -142,7 +142,7 @@ def acha_professor(cpf):
     # retorna o cadastro na lista se existir o CPF ou None se CPF não cadastrado
     for cadastro in lista:
         if cadastro[0] == cpf:
-            return cadastro
+            return cadastro.copy()
     return None
 
 
@@ -151,7 +151,7 @@ def exportar_tabela():
     return f.copiar_lista(lista)
 
 
-def _menu_professores():
+def professores():
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
@@ -175,10 +175,6 @@ def _menu_professores():
         opções[opção][1]()
         if opção == 0:
             break  # retorna para o menu principal
-
-
-def professores():
-    _menu_professores()
 
 
 # As opções de menu estão numa lista de tuplas contendo o rótulo da opção

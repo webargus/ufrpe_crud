@@ -125,7 +125,7 @@ def acha_disciplina(codigo):
     # ou None se o código não estiver cadastrado
     for cadastro in lista:
         if cadastro[0] == codigo:
-            return cadastro
+            return cadastro.copy()
     return None
 
 
