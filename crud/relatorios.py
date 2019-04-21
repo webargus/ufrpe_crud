@@ -79,13 +79,17 @@ def _disciplinas_por_aluno():
     pass
 
 
-def relatorios():
+def _inicializa():
     global lista_turmas
     lista_turmas = importar_turmas()
     global lista_profs
     lista_profs = importar_professores()
     global lista_alunos
     lista_alunos = importar_alunos()
+
+
+def relatorios():
+    _inicializa()
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
@@ -119,6 +123,6 @@ opções = [("Sair", lambda _=None: True),
           ("Turmas por professor", _turmas_por_professor),
           ("Disciplinas por aluno", _disciplinas_por_aluno)]
 
-
+_inicializa()
 
 

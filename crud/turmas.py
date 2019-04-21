@@ -431,6 +431,14 @@ def checa_professor(cpf):
     return turmas_professor
 
 
+def checa_disciplina(codigo):
+    turmas = []
+    for turma in lista_turmas:
+        if turma[3] == codigo:
+            turmas.append(turma.copy())
+    return turmas
+
+
 def checa_aluno_geral(cpf):
     turmas_do_aluno = []
     for turma in lista_turmas:
@@ -488,12 +496,15 @@ def _imprimir_turmas():
     f.imprimir_tabela(cabeçalho_turmas, lista)
 
 
-def turmas():
+def _inicializa():
     #   inicializa o módulo lendo os cadastros de turmas do arquivo para a memória
     _ler_alunos()
     _ler_professores()
     _ler_turmas()
 
+
+def turmas():
+    _inicializa()
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
@@ -531,7 +542,7 @@ opções = [("Sair", lambda _=None: True),
           ("Incluir aluno", _incluir_aluno),
           ("Excluir aluno", _excluir_aluno)]
 
-
+_inicializa()
 
 
 
