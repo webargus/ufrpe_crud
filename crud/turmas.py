@@ -417,8 +417,27 @@ def _acha_professores(id_turma):
         if entrada[0] == id_turma:
             prof = acha_professor(entrada[1])
             if prof is not None:
-                professores.append(prof)
+                professores.append(prof.copy())
     return professores
+
+
+def checa_professor(cpf):
+    turmas_professor = []
+    for entrada in lista_profs:
+        if entrada[1] == cpf:
+            turma = _acha_turma(entrada[0])
+            turma.append(acha_disciplina(turma[3])[1])
+            turmas_professor.append(turma.copy())
+    return turmas_professor
+
+
+def checa_aluno_geral(cpf):
+    turmas_do_aluno = []
+    for turma in lista_turmas:
+        if _checa_aluno(cpf, turma[0]):
+            turma.append(acha_disciplina(turma[3])[1])
+            turmas_do_aluno.append(turma.copy())
+    return turmas_do_aluno
 
 
 def _checa_aluno(cpf, id_turma):
@@ -428,12 +447,19 @@ def _checa_aluno(cpf, id_turma):
     return False
 
 
-def _remover_aluno(cpf, id_turma):
+def remover_aluno_geral(cpf):
+    for turma in lista_turmas:
+        _remover_aluno(cpf, turma[0], False)
+    _salvar_alunos()
+
+
+def _remover_aluno(cpf, id_turma, salva=True):
     for aluno in lista_alunos:
         if aluno[0] == id_turma and aluno[1] == cpf:
             lista_alunos.remove(aluno)
             break
-    _salvar_alunos()
+    if salva:
+        _salvar_alunos()
 
 
 def _imprimir_alunos(id_turma):
@@ -463,6 +489,11 @@ def _imprimir_turmas():
 
 
 def turmas():
+    #   inicializa o módulo lendo os cadastros de turmas do arquivo para a memória
+    _ler_alunos()
+    _ler_professores()
+    _ler_turmas()
+
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
@@ -499,11 +530,6 @@ opções = [("Sair", lambda _=None: True),
           ("Excluir professor", _excluir_professor),
           ("Incluir aluno", _incluir_aluno),
           ("Excluir aluno", _excluir_aluno)]
-
-#   inicializa o módulo lendo os cadastros de turmas do arquivo para a memória
-_ler_alunos()
-_ler_professores()
-_ler_turmas()
 
 
 

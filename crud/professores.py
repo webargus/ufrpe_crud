@@ -116,10 +116,19 @@ def _excluir_cadastro():
             return
         break
     ord -= 1
-    print("CPF: %s" % (lista[ord][0]))
+    cpf = lista[ord][0]
+    print("CPF: %s" % cpf)
     print("Nome: %s" % (lista[ord][1]))
     print("Departamento: %s" % (lista[ord][2]))
-    #   TODO: Nega exclusão se cadastro vinculado a alguma turma
+    #   Nega exclusão se cadastro vinculado a alguma turma
+    from crud.turmas import checa_professor
+    turmas_professor = checa_professor(cpf)
+    if len(turmas_professor) > 0 :
+        print("O professor acima está vinculado à(s) seguinte(s) turma(s):")
+        for turma in turmas_professor:
+            print("Código: %s, Período: %s, Disciplina: %s - %s" % (turma[1], turma[2], turma[3], turma[4]))
+        print("Remova-o da(s) turma(s) antes de excluí-lo")
+        return
     resp = input("Confirma a exclusão desse cadastro?\n(sim = confirma): ")
     if resp.lower() != 'sim':
         return
@@ -155,7 +164,7 @@ def professores():
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
-        print("Cadastro de Professores".upper())
+        print("\n\tCadastro de Professores".upper())
         f.imprimir_tabela(cabeçalho, lista)
         # imprime o número de cada opção e sua descrição:
         for opção, tupla in enumerate(opções):
@@ -181,8 +190,8 @@ def professores():
 # e a função que deve ser executada mediante a escolha de uma opção;
 # o objetivo é facilitar seja a exclusão de opções existentes
 # ou a inclusão de novas opções, caso seja necessário modificar a rotina.
-opções = [("Sair", lambda _=None: True), ("Novo cadastro", _novo_cadastro),
-          ("Alterar cadastro", _alterar_cadastro), ("Excluir cadastro", _excluir_cadastro)]
+opções = [("Sair", lambda _=None: True), ("Incluir professor", _novo_cadastro),
+          ("Alterar cadastro", _alterar_cadastro), ("Excluir professor", _excluir_cadastro)]
 
 #   inicializa o módulo lendo o cadastro do arquivo para a memória
 _ler_cadastro()

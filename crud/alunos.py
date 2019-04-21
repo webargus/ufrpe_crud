@@ -100,12 +100,22 @@ def _excluir_aluno():
             return
         break
     ord -= 1
-    print("CPF: %s" % (lista[ord][0]))
+    cpf = lista[ord][0]
+    print("CPF: %s" % cpf)
     print("Nome: %s" % (lista[ord][1]))
-    #   TODO: Nega exclusão se aluno vinculado a alguma turma
+    #   Nega exclusão se aluno vinculado a alguma turma
+    from crud.turmas import checa_aluno_geral
+    turmas_do_aluno = checa_aluno_geral(cpf)
+    if len(turmas_do_aluno) > 0:
+        print("ATENÇÃO: o aluno acima está inscrito na(s) seguinte(s) turma(s):")
+        for turma in turmas_do_aluno:
+            print("\tCódigo: %s, Período: %s, Disciplina: %s %s" % (turma[1], turma[2], turma[3], turma[4]))
+        print("Esta operação irá remover o aluno da(s) turma(s) acima")
     resp = input("Confirma a exclusão desse aluno?\n(sim = confirma): ")
     if resp.lower() != 'sim':
         return
+    from crud.turmas import remover_aluno_geral
+    remover_aluno_geral(cpf)
     del lista[ord]
     _salvar_cadastro()
 
