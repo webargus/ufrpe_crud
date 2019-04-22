@@ -405,7 +405,8 @@ def _exportar_alunos():
 def _acha_turma(id_turma):
     # busca turma por id da turma e retorna tupla com dados da turma
     # ou None se turma não encontrada
-    for turma in lista_turmas:
+    turma_copia = f.copiar_lista(lista_turmas)
+    for turma in turma_copia:
         if turma[0] == id_turma:
             return turma.copy()
     return None
@@ -413,7 +414,8 @@ def _acha_turma(id_turma):
 
 def _acha_professores(id_turma):
     professores = []
-    for entrada in lista_profs:
+    profs_copia = f.copiar_lista(lista_profs)
+    for entrada in profs_copia:
         if entrada[0] == id_turma:
             prof = acha_professor(entrada[1])
             if prof is not None:
@@ -423,7 +425,8 @@ def _acha_professores(id_turma):
 
 def checa_professor(cpf):
     turmas_professor = []
-    for entrada in lista_profs:
+    profs_copia = f.copiar_lista(lista_profs)
+    for entrada in profs_copia:
         if entrada[1] == cpf:
             turma = _acha_turma(entrada[0])
             turma.append(acha_disciplina(turma[3])[1])
@@ -433,7 +436,8 @@ def checa_professor(cpf):
 
 def checa_disciplina(codigo):
     turmas = []
-    for turma in lista_turmas:
+    turmas_copia = f.copiar_lista(lista_turmas)
+    for turma in turmas_copia:
         if turma[3] == codigo:
             turmas.append(turma.copy())
     return turmas
@@ -441,7 +445,8 @@ def checa_disciplina(codigo):
 
 def checa_aluno_geral(cpf):
     turmas_do_aluno = []
-    for turma in lista_turmas:
+    turmas_copia = f.copiar_lista(lista_turmas)
+    for turma in turmas_copia:
         if _checa_aluno(cpf, turma[0]):
             turma.append(acha_disciplina(turma[3])[1])
             turmas_do_aluno.append(turma.copy())

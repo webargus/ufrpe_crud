@@ -131,7 +131,7 @@ def imprimir_tabela(headers, dados):
     #   Entradas:
     #       Cabeçalho: headers = {"nome campo 0": tamanho, ..., "nome campo n-1": tamanho}
     #       Dados a imprimir: matriz m linhas X n colunas
-#               dados = [[dado 0, ... dado n-1], ..., [dado 0, ... dado n-1]]
+    #       dados = [[dado 0, ... dado n-1], ..., [dado 0, ... dado n-1]]
     #
     #   +------------+-------------+--------+-------------+
     #   |campo-0     |campo-1      |  ...   |campo-(n-1)  |

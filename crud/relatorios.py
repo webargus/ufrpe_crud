@@ -15,7 +15,10 @@ from crud.turmas import _imprimir_turmas
 from crud.turmas import _exportar_turmas as importar_turmas
 from crud.turmas import _exportar_professores as importar_professores
 from crud.turmas import _exportar_alunos as importar_alunos
+from crud.turmas import checa_professor as importar_turmas_professor
+from crud.turmas import checa_aluno_geral as turmas_do_aluno
 from crud.professores import acha_professor
+from crud.professores import exportar_tabela as importar_tabela
 from crud.disciplinas import acha_disciplina
 from crud.alunos import acha_aluno
 
@@ -24,6 +27,7 @@ lista_profs = []
 lista_alunos = []
 
 cabeçalho_ata = {"Nota": "6", "CPF": "15", "Nome do(a) aluno(a)": "50", "Assinatura": "40"}
+cabeçalho_turmas = {"Turma": "6", "Período": "8", "Código": "8", "Disciplina": "50"}
 
 
 def _imprimir_ata():
@@ -72,11 +76,76 @@ def _imprimir_ata():
 
 
 def _turmas_por_professor():
-    pass
+    professores = importar_tabela()
+    while True:
+        try:
+            ord = int(input("Entre o número (ORD) do professor para impressão de relatório por turmas  (0 - aborta):\n"))
+            if ord < 0 or ord > len(professores):
+                raise ValueError
+        except ValueError:
+            print("Entrada inválida :( tente novamente...")
+            continue
+        if ord == 0:
+            print("Operação abortada")
+            return
+        break
+    ord -= 1
+    while True:
+        periodo = input("Qual período (Enter = todos)?\n")
+        if periodo == '' or f.validar_periodo(periodo):
+            break
+        else:
+            print("Entrada inválida :( formato AAAA.S A=Ano, S= Semestre")
+
+    turmas = importar_turmas_professor(professores[ord][0])
+    if periodo != '':
+        turmas = [t for t in turmas if t[2] == periodo]
+    if len(turmas) == 0:
+        print("Não há turmas vinculadas a esse professor no(s) período(s) selecionado(s)")
+        return
+    turmas = [t[1:] for t in turmas]
+    f.imprimir_tabela(cabeçalho_turmas, turmas)
 
 
 def _disciplinas_por_aluno():
-    pass
+    # entra CPF do aluno
+    while True:
+        cpf = input("Entre o CPF do aluno (0 - aborta):\n")
+        if cpf == "0":
+            print("Operação abortada")
+            return
+        if f.validar_cpf(cpf):
+            cpf = f.formatar_cpf(cpf)
+            # busca aluno
+            aluno = acha_aluno(cpf)
+            if aluno is None:
+                print("Aluno com o CPF %s não encontrado" % cpf)
+                continue
+            print("CPF: %s, Aluno: %s" % (aluno[0], aluno[1]))
+            break
+        else:
+            print("CPF inválido (somente algarismos, 11 dígitos): tente novamente")
+    # busca turmas do aluno
+    turmas = turmas_do_aluno(cpf)
+    if turmas is None:
+        print("Esse aluno não está matriculado em nenhuma disciplina")
+        return
+    # entra período
+    while True:
+        periodo = input("Qual período (Enter = todos)?\n")
+        if periodo == '' or f.validar_periodo(periodo):
+            break
+        else:
+            print("Entrada inválida :( formato AAAA.S A=Ano, S= Semestre")
+
+    # seleciona período
+    if periodo != '':
+        turmas = [t for t in turmas if t[2] == periodo]
+    if len(turmas) == 0:
+        print("Esse aluno não está matriculado em nenhuma disciplina no período %s" % periodo)
+        return
+    turmas = [t[1:] for t in turmas]
+    f.imprimir_tabela(cabeçalho_turmas, turmas)
 
 
 def _inicializa():

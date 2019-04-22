@@ -148,7 +148,7 @@ def _salvar_cadastro():
 
 def acha_professor(cpf):
     # Função para encontrar um cadastro na lista pelo CPF do professor;
-    # retorna o cadastro na lista se existir o CPF ou None se CPF não cadastrado
+    # retorna CÓPIA do cadastro se existir o CPF ou None se CPF não cadastrado
     for cadastro in lista:
         if cadastro[0] == cpf:
             return cadastro.copy()
