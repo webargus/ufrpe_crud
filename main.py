@@ -26,9 +26,12 @@ def sair():
 # e a função que deve ser executada mediante a escolha de uma opção;
 # o objetivo é facilitar seja a exclusão de opções existentes
 # ou a inclusão de novas opções, caso seja necessário modificar o programa.
-opções = [("Sair", sair), ("Professores", professores),
-          ("Disciplinas", disciplinas), ("Alunos", alunos),
-          ("Turmas", turmas), ("Relatórios", relatorios)]
+opções = [("Sair", sair),
+          ("Professores", professores),
+          ("Disciplinas", disciplinas),
+          ("Alunos", alunos),
+          ("Turmas", turmas),
+          ("Relatórios", relatorios)]
 
 # loop para entrada de opção de menu com bloco try-except para forçar
 # o usuário a entrar uma opção válida:

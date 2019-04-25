@@ -254,11 +254,13 @@ def _incluir_aluno():
     ord -= 1
     print("Turma: %s" % (lista_turmas[ord][1]))
     print("Período: %s" % (lista_turmas[ord][2]))
-    print("Código da disciplina: %s" % (lista_turmas[ord][3]))
+    codigo = lista_turmas[ord][3]
+    print("Disciplina: %s - %s" % (codigo, acha_disciplina(codigo)[1]))
     id_turma = lista_turmas[ord][0]
-    #lista alunos da turma
-    print("Alunos matriculados na turma:")
-    _imprimir_alunos(id_turma)
+    # lista alunos da turma, se houver
+    if len([x for x in lista_alunos if x[0] == id_turma]) > 0:
+        print("Alunos matriculados na turma:")
+        _imprimir_alunos(id_turma)
 
     # entra CPF do aluno a incluir
     while True:
@@ -498,6 +500,8 @@ def _imprimir_turmas():
         turma.append(professores)
     #  elimina campo da id da turma antes de imprimir
     lista = [x[1:] for x in lista]
+    # ordena lista por período da turma
+    lista.sort(key=lambda turma: turma[1])
     f.imprimir_tabela(cabeçalho_turmas, lista)
 
 

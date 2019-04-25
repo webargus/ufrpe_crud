@@ -99,7 +99,11 @@ def _turmas_por_professor():
 
     turmas = importar_turmas_professor(professores[ord][0])
     if periodo != '':
+        # filtra lista de turmas (var. turmas) incluindo só turmas do período solicitado
         turmas = [t for t in turmas if t[2] == periodo]
+    else:
+        # ordena por período, quando relatório inclui todos os períodos
+        turmas.sort(key=lambda t: t[2])
     if len(turmas) == 0:
         print("Não há turmas vinculadas a esse professor no(s) período(s) selecionado(s)")
         return
@@ -149,6 +153,7 @@ def _disciplinas_por_aluno():
 
 
 def _inicializa():
+    # Atualiza dados da memória para processamento dos relatórios, caso tenham sido alterados nos outros módulos
     global lista_turmas
     lista_turmas = importar_turmas()
     global lista_profs

@@ -103,7 +103,7 @@ def _excluir_aluno():
     cpf = lista[ord][0]
     print("CPF: %s" % cpf)
     print("Nome: %s" % (lista[ord][1]))
-    #   Nega exclusão se aluno vinculado a alguma turma
+    #   Verifica e informa sobre exclusão se aluno vinculado a alguma turma
     from crud.turmas import checa_aluno_geral
     turmas_do_aluno = checa_aluno_geral(cpf)
     if len(turmas_do_aluno) > 0:
@@ -123,11 +123,16 @@ def _excluir_aluno():
 def _ler_cadastro():
     del lista[:]    # limpa lista antes de ler
     f.ler_arquivo(arquivo, lista)
-    lista.sort(key=lambda cadastro: cadastro[1].lower())
 
 
 def _salvar_cadastro():
     f.salvar_arquivo(arquivo, lista)
+
+
+#   imprime cadastro em ordem alfabética por nome
+def _imprime_cadastro():
+    lista.sort(key=lambda cadastro: cadastro[1].lower())
+    f.imprimir_tabela(cabeçalho, lista)
 
 
 def acha_aluno(cpf):
@@ -140,13 +145,12 @@ def acha_aluno(cpf):
     return None
 
 
-
 def alunos():
     # loop para input de opção de menu com bloco try-except para forçar
     # o usuário a entrar uma opção válida:
     while True:
         print("Cadastro de alunos".upper())
-        f.imprimir_tabela(cabeçalho, lista)
+        _imprime_cadastro()
         # imprime o número de cada opção e sua descrição:
         for opção, tupla in enumerate(opções):
             print("%d - %s" % (opção, tupla[0]))
