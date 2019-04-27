@@ -15,8 +15,8 @@ from crud.turmas import _imprimir_turmas
 from crud.turmas import _exportar_turmas as importar_turmas
 from crud.turmas import _exportar_professores as importar_professores
 from crud.turmas import _exportar_alunos as importar_alunos
-from crud.turmas import checa_professor as importar_turmas_professor
-from crud.turmas import checa_aluno_geral as turmas_do_aluno
+from crud.turmas import acha_turmas_professor as importar_turmas_professor
+from crud.turmas import busca_aluno_turmas as turmas_do_aluno
 from crud.professores import acha_professor
 from crud.professores import exportar_tabela as importar_tabela
 from crud.disciplinas import acha_disciplina

@@ -106,8 +106,8 @@ def _excluir_aluno():
     print("CPF: %s" % cpf)
     print("Nome: %s" % (lista[ord][1]))
     #   Verifica e informa sobre exclusão se aluno vinculado a alguma turma
-    from crud.turmas import checa_aluno_geral
-    turmas_do_aluno = checa_aluno_geral(cpf)
+    from crud.turmas import busca_aluno_turmas
+    turmas_do_aluno = busca_aluno_turmas(cpf)
     if len(turmas_do_aluno) > 0:
         print("ATENÇÃO: o aluno acima está inscrito na(s) seguinte(s) turma(s):")
         for turma in turmas_do_aluno:

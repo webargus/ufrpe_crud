@@ -121,8 +121,8 @@ def _excluir_cadastro():
     print("Nome: %s" % (lista[ord][1]))
     print("Departamento: %s" % (lista[ord][2]))
     #   Nega exclusão se cadastro vinculado a alguma turma
-    from crud.turmas import checa_professor
-    turmas_professor = checa_professor(cpf)
+    from crud.turmas import acha_turmas_professor
+    turmas_professor = acha_turmas_professor(cpf)
     if len(turmas_professor) > 0 :
         print("O professor acima está vinculado à(s) seguinte(s) turma(s):")
         for turma in turmas_professor:

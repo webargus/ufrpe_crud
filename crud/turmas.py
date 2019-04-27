@@ -278,11 +278,11 @@ def _excluir_professor():
 
 
 def _incluir_aluno():
-    if len(lista_turmas) == 0:
+    if len(lista_turmas) == 0:  # aborta se não houver turmas cadastradas
         print("Não há turmas para incluir aluno")
         return
     while True:
-        try:
+        try:    # entra turma na qual se quer incluir o aluno, pelo número ORD da turma na tela
             ord = int(input("Entre o número (ORD) da turma para incluir o aluno (0 - aborta):\n"))
             if ord < 0 or ord > len(lista_turmas):
                 raise ValueError
@@ -294,17 +294,18 @@ def _incluir_aluno():
             return
         break
     ord -= 1
+    # exibe dados da turma
     print("Turma: %s" % (lista_turmas[ord][1]))
     print("Período: %s" % (lista_turmas[ord][2]))
     codigo = lista_turmas[ord][3]
     print("Disciplina: %s - %s" % (codigo, acha_disciplina(codigo)[1]))
+    # exibe alunos da turma, se houver
     id_turma = lista_turmas[ord][0]
-    # lista alunos da turma, se houver
     if len([x for x in lista_alunos if x[0] == id_turma]) > 0:
         print("Alunos matriculados na turma:")
         _imprimir_alunos(id_turma)
 
-    # entra CPF do aluno a incluir
+    # entra e valida CPF do aluno a incluir
     while True:
         cpf = input("Entre o CPF do aluno (0 - aborta):\n")
         if cpf == "0":
@@ -314,33 +315,33 @@ def _incluir_aluno():
                 break
         else:
             print("CPF inválido (somente algarismos, 11 dígitos): tente novamente")
-    # verifica se CPF de aluno está cadastrado
+    # formata e verifica se existe aluno cadastrado com o CPF fornecido
     cpf = f.formatar_cpf(cpf)
     aluno = acha_aluno(cpf)
     if aluno is None:
         print("Não há aluno cadastrado com o CPF %s" % cpf)
         print("\tNo menu principal, escolha a opção '3 - Alunos -> 1 - Novo aluno' e cadastre o aluno\n")
         return
-    # vê se aluno já foi incluido na turma
+    # vê se aluno já foi incluido na turma e aborta se for o caso
     print("CPF: %s" % aluno[0])
     print("Nome: %s" % (aluno[1]))
     if _checa_aluno(cpf, id_turma):
         print("Esse aluno já foi incluído na turma.")
         return
-    # inclui aluno
+    # inclui aluno na turma
     lista_alunos.append([id_turma, cpf])
     _salvar_alunos()
-    #lista alunos da turma
+    # exibe lista atualizada de alunos da turma
     print("Alunos matriculados na turma:")
     _imprimir_alunos(id_turma)
 
 
 def _excluir_aluno():
-    if len(lista_turmas) == 0:
+    if len(lista_turmas) == 0:      # aborta se não há turmas cadastradas
         print("Não há turmas para excluir aluno")
         return
     while True:
-        try:
+        try:  # entra a turma de onde se quer excluir o aluno, pelo número de ordem mostrado na tela
             ord = int(input("Entre o número (ORD) da turma de onde excluir o aluno (0 - aborta):\n"))
             if ord < 0 or ord > len(lista_turmas):
                 raise ValueError
@@ -352,19 +353,20 @@ def _excluir_aluno():
             return
         break
     ord -= 1
+    # exibe dados da turma
     print("Turma: %s" % (lista_turmas[ord][1]))
     print("Período: %s" % (lista_turmas[ord][2]))
     codigo = lista_turmas[ord][3]
     print("Disciplina: %s - %s" % (codigo, acha_disciplina(codigo)[1]))
     id_turma = lista_turmas[ord][0]
-    #lista alunos da turma
+    # exibe lista de alunos da turma e obtém cópia da lista
     print("Alunos matriculados na turma:")
     lista = _imprimir_alunos(id_turma)
-    if len(lista) == 0:
+    if len(lista) == 0:     # aborta exclusão se não há alunos a excluir da turma
         print("Não há alunos inscritos nessa turma")
         return
     while True:
-        try:
+        try:    # entra aluno a excluir baseado no número de ordem correspondente na lista de alunos printada na tela
             ord = int(input("Entre o número (ORD) do aluno a excluir (0 - aborta):\n"))
             if ord < 0 or ord > len(lista):
                 raise ValueError
@@ -376,17 +378,20 @@ def _excluir_aluno():
             return
         break
     ord -= 1
+    # exibe dados do aluno e pede pela confirmação da exclusão
     cpf = lista[ord][0]
     print("CPF: %s" % cpf)
     print("Nome: %s" % lista[ord][1])
     resp = input("Confirma a remoção do aluno (sim - remove)?")
     if resp.lower() != 'sim':
         return
+    # remove aluno e imprime tabela atualizada dos alunos da turma
     _remover_aluno(cpf, id_turma)
     _imprimir_alunos(id_turma)
 
 
 def _remover_professor(id_turma, cpf):
+    # remove da tabela associativa a referência para o professor identificado por cpf
     for entrada in lista_profs:
         if entrada[0] == id_turma and entrada[1] == cpf:
             lista_profs.remove(entrada)
@@ -395,6 +400,7 @@ def _remover_professor(id_turma, cpf):
 
 
 def _elimina_professores(id_turma):
+    # função (recursiva) para excluir a(s) referência(s) para todos os professores da turma identificada por id_turma
     for entrada in lista_profs:
         if entrada[0] == id_turma:
             lista_profs.remove(entrada)
@@ -402,6 +408,7 @@ def _elimina_professores(id_turma):
 
 
 def _elimina_alunos(id_turma):
+    # função (recursiva) para desvincular todos os alunos referenciados à turma id_turma
     for entrada in lista_alunos:
         if entrada[0] == id_turma:
             lista_alunos.remove(entrada)
@@ -409,41 +416,54 @@ def _elimina_alunos(id_turma):
 
 
 def _ler_turmas():
+    # lê as turmas do arquivo .csv no HD para a memória
     del lista_turmas[:]    # limpa lista antes de ler
-    f.ler_arquivo(turmas_geral, lista_turmas)
+    f.ler_arquivo(turmas_geral, lista_turmas)   # usa função de leitura de arquivo definida no módulo 'ferramentas'
 
 
 def _salvar_turmas():
+    # salva lista de turmas no HD usando função de escrita em arquivo definida no módulo 'ferramentas'
     f.salvar_arquivo(turmas_geral, lista_turmas)
 
 
 def _ler_professores():
-    del lista_profs[:]
-    f.ler_arquivo(turmas_profs, lista_profs)
+    # lê tabela associativa entre professores e turmas do arquivo .csv no HD para a memória
+    del lista_profs[:]  # limpa memória antes de ler
+    f.ler_arquivo(turmas_profs, lista_profs)    # usa função de leitura de arquivo definida no módulo 'ferramentas'
 
 
 def _salvar_professores():
+    # salva tabela associativa entre professores e turmas no HD usando função de escrita em arquivo definida em 'ferramentas'
     f.salvar_arquivo(turmas_profs, lista_profs)
 
 
 def _ler_alunos():
-    del lista_alunos[:]
-    f.ler_arquivo(turmas_alunos, lista_alunos)
+    # lê tabela associativa entre alunos e turmas, do HD para a memória
+    del lista_alunos[:]     # limpa memória antes de ler
+    f.ler_arquivo(turmas_alunos, lista_alunos)  # usa função de leitura de arquivo definida em 'ferramentas'
 
 
 def _salvar_alunos():
+    # salva tabela de referência entre alunos e turmas no HD usando função de escrita em arquivo definida em 'ferramentas'
     f.salvar_arquivo(turmas_alunos, lista_alunos)
 
 
 def _exportar_turmas():
+    # exporta cópia de lista de turmas usando função de cópia definida no módulo 'ferramentas'
+    # (função importada pelo módulo 'relatorios' para a emissão de reportes)
     return f.copiar_lista(lista_turmas)
 
 
 def _exportar_professores():
+    # exporta cópia de lista de referência entre professores e turmas
+    # usando função de cópia definida no módulo 'ferramentas'
+    # (função importada pelo módulo 'relatorios' para a emissão de reportes)
     return f.copiar_lista(lista_profs)
 
 
 def _exportar_alunos():
+    # exporta cópia de lista de referência entre alunos e turmas usando função de cópia definida no módulo 'ferramentas'
+    # (função importada pelo módulo 'relatorios' para a emissão de reportes)
     return f.copiar_lista(lista_alunos)
 
 
@@ -458,28 +478,34 @@ def _acha_turma(id_turma):
 
 
 def _acha_professores(id_turma):
+    # retorna lista contendo os cadastros dos professores pertencentes á turma identificada por id_turma
     professores = []
     profs_copia = f.copiar_lista(lista_profs)
     for entrada in profs_copia:
         if entrada[0] == id_turma:
+            # usa função definida no módulo 'professores' para fazer busca do cadastro do professor
             prof = acha_professor(entrada[1])
             if prof is not None:
-                professores.append(prof.copy())
+                professores.append(prof.copy())     # acumula cadastro encontrado na lista de retorno
     return professores
 
 
-def checa_professor(cpf):
+def acha_turmas_professor(cpf):
+    # busca e retorna turmas às quais o professor identificado por cpf está vinculado, baseando-se
+    # na lista associativa entre professores e turmas (lista 'turmas_professor')
     turmas_professor = []
     profs_copia = f.copiar_lista(lista_profs)
     for entrada in profs_copia:
-        if entrada[1] == cpf:
-            turma = _acha_turma(entrada[0])
-            turma.append(acha_disciplina(turma[3])[1])
-            turmas_professor.append(turma.copy())
+        if entrada[1] == cpf:       # bingo! achou turma associada ao professor
+            turma = _acha_turma(entrada[0])     # usa função local para ler cadastro da turma
+            # busca cadastro da disciplina correspondente à turma usando função importada do módulo 'disciplinas'
+            turma.append(acha_disciplina(turma[3])[1])  # acrescenta nome por extenso da disciplina ao cadastro lido
+            turmas_professor.append(turma.copy())   # acumula turma na lista de retorno
     return turmas_professor
 
 
-def checa_disciplina(codigo):
+def busca_turmas_disciplina(codigo):
+    # busca e retorna lista contendo turmas vinculadas à disciplina identificada por 'codigo'
     turmas = []
     turmas_copia = f.copiar_lista(lista_turmas)
     for turma in turmas_copia:
@@ -488,17 +514,20 @@ def checa_disciplina(codigo):
     return turmas
 
 
-def checa_aluno_geral(cpf):
+def busca_aluno_turmas(cpf):
+    # busca e retorna as turmas em que o aluno identificado por cpf está matriculado
     turmas_do_aluno = []
     turmas_copia = f.copiar_lista(lista_turmas)
-    for turma in turmas_copia:
-        if _checa_aluno(cpf, turma[0]):
-            turma.append(acha_disciplina(turma[3])[1])
-            turmas_do_aluno.append(turma.copy())
+    for turma in turmas_copia:      # varre as turmas em busca do aluno
+        if _checa_aluno(cpf, turma[0]):     # vê se aluno está matriculado na turma
+            turma.append(acha_disciplina(turma[3])[1])      # acrescenta nome da disciplina ao cadastro da turma
+            turmas_do_aluno.append(turma.copy())    # acumula cadastro da turma na lista de retorno
     return turmas_do_aluno
 
 
 def _checa_aluno(cpf, id_turma):
+    # verifica se o aluno identificado por 'cpf' pertence à turma identificada por 'id_turma'
+    # retorna verdadeiro ou falso, conforme o caso
     for aluno in lista_alunos:
         if aluno[0] == id_turma and aluno[1] == cpf:
             return True
@@ -506,21 +535,24 @@ def _checa_aluno(cpf, id_turma):
 
 
 def remover_aluno_geral(cpf):
+    # remove o aluno identificado por 'cpf' de todas as turmas e salva lista de referência entre alunos e turmas no HD
     for turma in lista_turmas:
-        _remover_aluno(cpf, turma[0], False)
+        _remover_aluno(cpf, turma[0], False)    # False => não salve lista no HD ainda, só no final da remoção
     _salvar_alunos()
 
 
 def _remover_aluno(cpf, id_turma, salva=True):
+    # remove aluno da lista associativa entre alunos e turmas e salva lista no HD se parâmetro de entrada salva = True
     for aluno in lista_alunos:
-        if aluno[0] == id_turma and aluno[1] == cpf:
-            lista_alunos.remove(aluno)
+        if aluno[0] == id_turma and aluno[1] == cpf:    # bingo! associação encontrada entre aluno e turma
+            lista_alunos.remove(aluno)      # remove o aluno
             break
     if salva:
         _salvar_alunos()
 
 
 def _imprimir_alunos(id_turma):
+    # imprime tabela mostrando os alunos matriculados na turma identificada por 'id_turma'
     lista = [x for aluno in lista_alunos if aluno[0] == id_turma for x in [acha_aluno(aluno[1])]]
     f.imprimir_tabela(cabeçalho_alunos, lista)
     return lista

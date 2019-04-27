@@ -109,8 +109,8 @@ def _excluir_disciplina():
     print("Código: %s" % codigo)
     print("Nome: %s" % (lista[ord][1]))
     #   Nega exclusão se disciplina vinculada a alguma turma
-    from crud.turmas import checa_disciplina
-    turmas = checa_disciplina(codigo)
+    from crud.turmas import busca_turmas_disciplina
+    turmas = busca_turmas_disciplina(codigo)
     if len(turmas) > 0:
         print("A disciplina acima está vinculada à(s) seguinte(s) turma(s):")
         for turma in turmas:
