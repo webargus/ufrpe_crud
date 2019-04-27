@@ -17,6 +17,7 @@ cpf_pattern = r"^\d{11}$"               # expressão regular para validar CPF
 disciplina_pattern = r"^\d{5}$"         # expressão regular para validar código de disciplina
 periodo_pattern = r"^\d{4}\.\d{1}$"     # expressão regular para validar período de turma
 
+
 #   Funções para serialização de dados baseados em listas, que são salvas em arquivos no formato .csv,
 #   prevendo eventual migração para base de dados no futuro.
 #   Os campos de dados são salvos como strings entre aspas separadas

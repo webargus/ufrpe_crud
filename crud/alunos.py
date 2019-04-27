@@ -58,11 +58,12 @@ def _novo_aluno():
 
 
 def _alterar_cadastro():
-    if len(lista) == 0:
+    if len(lista) == 0:     #   aborta se lista de alunos vazia
         print("***Não há alunos cadastrados para alteração\n")
         return
     while True:
         try:
+            #   entra número de ordem do aluno, conforme printado na lista de alunos mostrada na tela
             ord = int(input("Entre o número (ORD) do aluno cujo nome deseja alterar (0 - aborta):\n"))
             if ord < 0 or ord > len(lista):
                 raise ValueError
@@ -79,16 +80,17 @@ def _alterar_cadastro():
     nome = input("Entre o nome correto do aluno (Enter = mantem):\n")
     nome = nome.strip()
     if len(nome) > 0:
-        lista[ord][1] = nome
-        _salvar_cadastro()
+        lista[ord][1] = nome        #   atualiza nome na memória
+        _salvar_cadastro()          #   salva cadastro
 
 
 def _excluir_aluno():
-    if len(lista) == 0:
+    if len(lista) == 0:     #   exibe mensagem informativa e retorna, caso a lista de alunos esteja vazia
         print("***Não há alunos cadastrados para exclusão\n")
         return
     while True:
         try:
+            #   entra número de ordem do aluno a excluir, conforme printado na tabela de alunos mostrada na tela
             ord = int(input("Entre o número (ORD) do aluno que deseja excluir (0 - aborta):\n"))
             if ord < 0 or ord > len(lista):
                 raise ValueError
@@ -114,19 +116,22 @@ def _excluir_aluno():
     resp = input("Confirma a exclusão desse aluno?\n(sim = confirma): ")
     if resp.lower() != 'sim':
         return
+    #   chama função para remover alunos de todas as turmas em que estava matriculado
     from crud.turmas import remover_aluno_geral
     remover_aluno_geral(cpf)
+    #   remove aluno da lista na memória e salva cadastro no HD
     del lista[ord]
     _salvar_cadastro()
 
 
 def _ler_cadastro():
     del lista[:]    # limpa lista antes de ler
-    f.ler_arquivo(arquivo, lista)
+    f.ler_arquivo(arquivo, lista)   # usa função acessória de leitura de arquivo no módulo ferramentas
 
 
+#   salva cadastro em arquivo
 def _salvar_cadastro():
-    f.salvar_arquivo(arquivo, lista)
+    f.salvar_arquivo(arquivo, lista)    # usa função acessória de gravação de arquivo no módulo ferramentas
 
 
 #   imprime cadastro em ordem alfabética por nome

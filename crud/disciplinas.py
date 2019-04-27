@@ -26,13 +26,14 @@ cabeçalho = {"Código": "15", "Nome": "40"}
 
 
 def _nova_disciplina():
+    #   Entra o código da disciplina a incluir
     while True:
         codigo = input("Entre o código da disciplina (0 - aborta):\n")
         if codigo == "0":
             print("Operação abortada")
             return
         if f.validar_disciplina(codigo):
-            #   faz busca pelo código e nega inclusão se cadastro já existente
+            #   faz busca pelo código e nega inclusão se cadastro de disciplina já existente
             disc = acha_disciplina(codigo)
             if disc is not None:
                 print("A disciplina %s - '%s' já está cadastrada no sistema" % disc)
@@ -40,7 +41,7 @@ def _nova_disciplina():
                 break
         else:
             print("Código inválido (somente algarismos, 5 dígitos): tente novamente")
-
+    #   Entra o nome da disciplina
     while True:
         nome = input("Entre o nome da disciplina (0 - aborta):\n")
         if nome == "0":
@@ -57,11 +58,13 @@ def _nova_disciplina():
 
 
 def _alterar_disciplina():
+    #   Informa usuário e aborta se não há disciplinas cadastradas ainda
     if len(lista) == 0:
         print("***Não há disciplinas cadastradas para alteração\n")
         return
     while True:
         try:
+            #   Entra o número de ordem da disciplina, conforme printado na tabela de disciplinas mostrada na tela
             ord = int(input("Entre o número (ORD) da disciplina cujo nome deseja alterar (0 - aborta):\n"))
             if ord < 0 or ord > len(lista):
                 raise ValueError
@@ -73,6 +76,8 @@ def _alterar_disciplina():
             return
         break
     ord -= 1
+    # Obs.: o código da disciplina jamais pode ser alterado, porque compõe chave primária para
+    # identificação inequívoca de turma
     print("Código: %s" % (lista[ord][0]))
     print("Nome: %s" % (lista[ord][1]))
     nome = input("Entre o nome correto da disciplina (Enter = mantem):\n")
@@ -83,11 +88,12 @@ def _alterar_disciplina():
 
 
 def _excluir_disciplina():
-    if len(lista) == 0:
+    if len(lista) == 0:     # Informa usuário e aborta se não houver disciplinas cadastradas ainda
         print("***Não há disciplinas cadastradas para exclusão\n")
         return
     while True:
         try:
+            # Entra o número de ordem correspondente à disciplina a excluir, conforme mostrado na tela
             ord = int(input("Entre o número (ORD) da disciplina que deseja excluir (0 - aborta):\n"))
             if ord < 0 or ord > len(lista):
                 raise ValueError
@@ -114,18 +120,18 @@ def _excluir_disciplina():
     resp = input("Confirma a exclusão dessa disciplina?\n(sim = confirma): ")
     if resp.lower() != 'sim':
         return
-    del lista[ord]
-    _salvar_cadastro()
+    del lista[ord]          # exclui a disciplina da memória
+    _salvar_cadastro()      # salva os cadastros no HD
 
 
 def _ler_cadastro():
     del lista[:]    # limpa lista antes de ler
-    f.ler_arquivo(arquivo, lista)
-    lista.sort(key=lambda disciplina: disciplina[1].lower())
+    f.ler_arquivo(arquivo, lista)   # chama função acessória do módulo 'ferramentas' e lê arquivo para a lista
+    lista.sort(key=lambda disciplina: disciplina[1].lower())    # ordena lista por nome da disciplina
 
 
 def _salvar_cadastro():
-    f.salvar_arquivo(arquivo, lista)
+    f.salvar_arquivo(arquivo, lista)    # chama função auxiliar do módulo 'ferramentas' e salva lista no HD
 
 
 def acha_disciplina(codigo):
@@ -139,8 +145,9 @@ def acha_disciplina(codigo):
 
 
 def exportar_tabela():
-    f.imprimir_tabela(cabeçalho, lista)
-    return f.copiar_lista(lista)
+    # função usada pelo módulo 'turmas' para composição de nova turma
+    f.imprimir_tabela(cabeçalho, lista)     # printa lista atualizada de disciplinas
+    return f.copiar_lista(lista)            # chama função auxiliar em 'ferramentas' para retornar cópia da lista
 
 
 def disciplinas():
