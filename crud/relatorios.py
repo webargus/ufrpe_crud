@@ -22,15 +22,21 @@ from crud.professores import exportar_tabela as importar_tabela
 from crud.disciplinas import acha_disciplina
 from crud.alunos import acha_aluno
 
+# listas para armazenar cópias das turmas e tabelas de referência entre professores e alunos e as turmas
+# a que estão vinculados
 lista_turmas = []
 lista_profs = []
 lista_alunos = []
 
+# dicionários com os cabeçalhos contendo os nomes dos campos e a largura de impressão de cada campo,
+# a serem usados pela função imprimir_tabela, no módulo 'ferramentas'
 cabeçalho_ata = {"Nota": "6", "CPF": "15", "Nome do(a) aluno(a)": "50", "Assinatura": "40"}
 cabeçalho_turmas = {"Turma": "6", "Período": "8", "Código": "8", "Disciplina": "50"}
 
 
 def _imprimir_ata():
+    # imprime lista de turmas na tela e prontifica o usuário a entrar o número de ordem (ORD) da turma
+    # cuja ata deseja imprimir
     _imprimir_turmas()
     while True:
         try:
@@ -45,32 +51,46 @@ def _imprimir_ata():
             return
         break
     ord -= 1
+    # pega a id da turma na lista de turmas
     id_turma = lista_turmas[ord][0]
+    # pega o código da disciplina da turma
     codigo = lista_turmas[ord][3]
+    # pega dados dos alunos vinculados à turma usando a lista de referência de alunos matriculados na turma
+    # (lista_alunos) e a função acha_aluno (módulo alunos)
     lista = [x for aluno in lista_alunos if aluno[0] == id_turma for x in [acha_aluno(aluno[1])]]
+    # exibe aviso e retorna caso não haja alunos matriculados nessa turma ainda
     if len(lista) == 0:
         print("Não há alunos inscritos nessa turma, nada a listar.")
         return
+    # acrescenta campos para impressão relativos à nota e assinatura do aluno (último campo)
     for x in lista:
         x.insert(0, '')
         x.append('')
+    # ordena lista por nome de aluno
     lista.sort(key=lambda aluno: aluno[2])
+    # imprime barra superior do relatório na tela (sequencia de caracteres '=') com largura
+    # igual à largura da ata a ser impressa
     larguras = cabeçalho_ata.values()
     largura = sum([int(x) for x in larguras]) + 2*(len(larguras) + 1)
     print("="*largura)
+    # imprime cabeçalho centrado
     print()
     print(('{:^' + str(largura) + '}').format("universidade federal rural de pernambuco".upper()))
     print(('{:^' + str(largura) + '}').format('Ata de Exercício'))
+    # imprime data e hora da emissão da ata (centrados)
     agora = datetime.datetime.now()
     print()
     print(('{:^' + str(largura) + '}').format(agora.strftime("%d/%m/%y - %H:%M")))
+    # imprime informações sobre a turma e professor(es)
     print("Turma: %s" % (lista_turmas[ord][1]))
     print("Período: %s" % (lista_turmas[ord][2]))
     print("Código da disciplina: %s" % codigo)
     print("Nome da Disciplina: %s" % (acha_disciplina(codigo)[1]))
     print("Professor(es): %s" % (', '.join([acha_professor(x[1])[1] for x in lista_profs if x[0] == id_turma])))
+    # imprime ata de presença
     print()
     f.imprimir_tabela(cabeçalho_ata, lista)
+    # imprime barra inferior do relatório
     print()
     print("="*largura)
 
