@@ -33,35 +33,37 @@ opções = [("Sair", sair),
           ("Turmas", turmas),
           ("Relatórios", relatorios)]
 
-# loop para entrada de opção de menu com bloco try-except para forçar
-# o usuário a entrar uma opção válida:
-while True:
-    print("")
-    print("**********   projeto crud - Sistema de controle acadêmico simplificado   **********".upper())
-    s = "menu principal"
-    print("\n\t\t" + s.upper())
-    print("\t\t" + "-"*len(s))
 
-    # imprime o número de cada opção e sua descrição:
-    for opção, tupla in enumerate(opções):
-        print("%d - %s" % (opção, tupla[0]))
-    print("")
+if __name__ == '__main__':
+    # loop para entrada de opção de menu com bloco try-except para forçar
+    # o usuário a entrar uma opção válida:
+    while True:
+        print("")
+        print("**********   projeto crud - Sistema de controle acadêmico simplificado   **********".upper())
+        s = "menu principal"
+        print("\n\t\t" + s.upper())
+        print("\t\t" + "-"*len(s))
 
-    try:
-        opção = int(input("Entre o número da opção desejada: \n"))
-        if opção < 0 or opção >= len(opções):
-            raise ValueError
-        rótulo = opções[opção][0]
-        # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
-        # não exista na lista de opções do menu (var. opções)
-    except ValueError:
-        print("Opção inválida :(")
-        continue
+        # imprime o número de cada opção e sua descrição:
+        for opção, tupla in enumerate(opções):
+            print("%d - %s" % (opção, tupla[0]))
+        print("")
 
-    # chama a função que executa a opção desejada;
-    # essas funções estão codificadas em módulos de mesmo nome
-    # (ver os 'import' no topo)
-    opções[opção][1]()
+        try:
+            opção = int(input("Entre o número da opção desejada: \n"))
+            if opção < 0 or opção >= len(opções):
+                raise ValueError
+            rótulo = opções[opção][0]
+            # aqui Python executa o bloco 'except' caso a opção digitada (var. opção)
+            # não exista na lista de opções do menu (var. opções)
+        except ValueError:
+            print("Opção inválida :(")
+            continue
+
+        # chama a função que executa a opção desejada;
+        # essas funções estão codificadas em módulos de mesmo nome
+        # (ver os 'import' no topo)
+        opções[opção][1]()
 
 
 
