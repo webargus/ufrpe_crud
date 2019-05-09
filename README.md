@@ -1,8 +1,4 @@
 "# UFRPE CRUD" 
-<p style='font-style: bold;'>
-Estrutura dos arquivos de dados:
-</p>
-arquivo turmas.csv:
-turma_id = string
-
-80 colunas
+<p style='font-style: bold;'>Projeto CRUD - BSI 2019.1 - Prof. Gilberto Cysneiros</p>
+Pfvr., sintam-se à vontade para melhorar ou corrigir bugs.
+Obrigado.
